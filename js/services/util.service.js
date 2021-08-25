@@ -1,7 +1,8 @@
 export const utilService = {
     makeId,
     makeLorem,
-    getRandomIntInclusive
+    getRandomIntInclusive,
+	formatCurrency
 }
 
 function makeId(length = 6) {
@@ -29,4 +30,9 @@ function getRandomIntInclusive(min, max) {
     min = Math.ceil(min);
     max = Math.floor(max);
     return Math.floor(Math.random() * (max - min + 1)) + min; //The maximum is inclusive and the minimum is inclusive 
+}
+
+function formatCurrency(book) {
+    const { amount, currencyCode } = book.listPrice
+    return (new Intl.NumberFormat('en-US', { style: 'currency', currency: currencyCode }).format(amount))
 }
