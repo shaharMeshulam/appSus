@@ -12,7 +12,8 @@ export const mailService = {
     getMailsToDisplay,
     addMail,
     getTypes,
-    getEmailById
+    getEmailById,
+    getUser
 };
 
 init();
@@ -37,6 +38,10 @@ function getMailsToDisplay(type) {
 
 function getTypes() {
     return TYPES;
+}
+
+function getUser() {
+    return USER;
 }
 
 function addMail(mail, timeStamp = Date.now(), isDraft = false, isStared = false, isInTrash = false) {
@@ -67,7 +72,7 @@ function _createMails() {
         View invitation
         Note: This invitation was intended for shahar.mesh@gmail.com. If you were not expecting this invitation, you can ignore this email. If @oripilpel is sending you too many emails, you can block them or report abuse.`,
         status: 'unRead',
-        from: 'noreply@github.com‏'
+        from: 'noreply@github.com‏',
     };
     addMail(mail);
     mail = {
