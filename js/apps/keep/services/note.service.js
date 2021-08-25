@@ -1,6 +1,7 @@
 export const noteService = {
     addNote,
-    getNotes
+    getNotes,
+    getNoteById
 }
 
 import { utilService } from "../../../services/util.service.js";
@@ -10,13 +11,23 @@ function getNotes() {
 }
 
 function addNote(note) {
+    if (note.type === 'note-todos') {
+        note.info.todos = note.info.todos.split(',')
+        note.info.todos = note.info.todos.map(todo => ({ txt: todo, doneAt: null }))
+    }
     for (const key in note.info) {
         if (note.info[key]) {
             note.id = utilService.makeId(8)
+            console.log(note);
             gNotes.push(note)
             return
         }
     }
+}
+
+function getNoteById(noteId) {
+    const note = gNotes.find(note => note.id === noteId)
+    return Promise.resolve(note)
 }
 
 const gNotes = [

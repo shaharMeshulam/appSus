@@ -8,3 +8,7 @@
 @import url(./apps/mail/mail-details.css);
 @import url(./apps//mail/mail-list-item.css);
 @import url(./apps/mail/wall.css);
+@import url(./apps/keep/note-list.css);
+@import url(./apps/keep/note.css);
+@import url(./apps/keep/note-action.css);
+@import url(./apps/keep/color-pallete.css);

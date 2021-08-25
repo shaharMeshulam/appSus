@@ -1,7 +1,9 @@
 import { NoteAdd } from '../cmps/add-note.jsx'
 import { NoteList } from '../cmps/note-list.jsx'
 import { noteService } from '../services/note.service.js'
-export class KeepApp extends React.Component {
+const { withRouter } = ReactRouterDOM
+
+class _KeepApp extends React.Component {
     state = {
         notes: null
     }
@@ -16,13 +18,18 @@ export class KeepApp extends React.Component {
         )
     }
 
+    onClick = (url) => {
+        this.props.history.push(url)
+    }
+
     render() {
         const { notes } = this.state
         return (
-            <section className="keep-app">
+            <React.Fragment>
                 <NoteAdd loadNotes={this.loadNotes} />
-                {notes && <NoteList notes={notes} />}
-            </section>
+                {notes && <NoteList notes={notes} onClick={this.onClick} />}
+            </React.Fragment>
         )
     }
 }
+export const KeepApp = withRouter(_KeepApp)
