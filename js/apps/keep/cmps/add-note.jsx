@@ -50,7 +50,7 @@ export class NoteAdd extends React.Component {
                 return 'Enter Video URL:'
             case 'note-img':
                 return 'Enter Image URL:'
-            case 'note-todo':
+            case 'note-todos':
                 return 'Write your comma sepereated Todolist :'
         }
         return 'Write your note..'
@@ -64,7 +64,7 @@ export class NoteAdd extends React.Component {
             case 'note-vid':
             case 'note-img':
                 return 'url'
-            case 'note-todo':
+            case 'note-todos':
                 return 'todos'
         }
     }
@@ -84,7 +84,7 @@ export class NoteAdd extends React.Component {
                     <span onClick={() => { this.onSetNoteType('note-img') }} className="material-icons-outlined">
                         image
                     </span>
-                    <span onClick={() => { this.onSetNoteType('note-todo') }} className="material-icons-outlined">
+                    <span onClick={() => { this.onSetNoteType('note-todos') }} className="material-icons-outlined">
                         format_list_bulleted
                     </span>
                     <span onClick={() => { this.onSetNoteType('note-txt') }} className="material-icons-outlined">

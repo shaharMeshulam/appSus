@@ -1,4 +1,5 @@
-export function NoteTodo({ note }) {
+export function NoteTodos({ note }) {
+    console.log(note);
     return (
         <div className="note">
             <ul>
