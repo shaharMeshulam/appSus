@@ -4,7 +4,7 @@ const { NavLink, withRouter } = ReactRouterDOM
 
 function _AppHeader() {
   return (
-    <section className="app-header">
+    <header className="app-header">
       <h2><NavLink to="/">AppSus</NavLink></h2>
       <nav>
         <NavLink to="/">Home</NavLink>
@@ -17,7 +17,7 @@ function _AppHeader() {
       <span className="material-icons-outlined">
         apps
       </span>
-    </section>
+    </header>
   )
 }
 export const AppHeader = withRouter(_AppHeader)

@@ -11,15 +11,13 @@ import { AppMail } from './pages/app-mail.jsx';
 export function App() {
     return (
         <Router>
-            <header>
-                <AppHeader />
-            </header>
+            <AppHeader />
             <main>
                 <Switch>
-                    <Route path="/book" component={AppBook} />
                     <Route path="/keep" component={AppKeep} />
                     <Route path="/mail" component={AppMail} />
                     <Route path="/about" component={AppAbout} />
+                    <Route path="/book" component={AppBook} />
                     <Route path="/" component={AppHome} />
                 </Switch>
             </main>

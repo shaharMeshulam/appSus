@@ -1,4 +1,4 @@
-import { BookApp } from "../apps/book/pages/BookApp.jsx";
+import { BookApp } from "../apps/book/pages/book-app.jsx";
 
 export function AppBook() {
     return (
