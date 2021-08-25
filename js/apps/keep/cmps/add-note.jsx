@@ -30,17 +30,15 @@ export class NoteAdd extends React.Component {
     }
 
     onSetNoteType = (noteType) => {
-        this.setState({ type: noteType, info: { txt: '', url: '', todos: null } }, () => { console.log(this.state); })
+        this.setState({ type: noteType, info: { txt: '', url: '', todos: null } })
     }
 
     onAddNote = () => {
-        noteService.addNote(this.state)
+        noteService.addNote(JSON.parse(JSON.stringify(this.state)))
+        this.props.loadNotes()
     }
 
-    onPinNote = () => {
-        this.setState(prevState => ({ isPinned: !prevState.isPinned }))
-    }
-
+    
     toggleColorPallete = () => {
 
     }
@@ -75,9 +73,7 @@ export class NoteAdd extends React.Component {
         const { title } = this.state.info
         return (
             <section className="add-note">
-                <span onClick={this.onPinNote} className="material-icons-outlined">
-                    push_pin
-                </span>
+
                 <input onChange={this.handleChange} value={title} name="title" type="text" placeholder="title" />
                 <input onChange={this.handleChange} value={this.state.info[this.getName]} name={this.getName} type="text" placeholder={this.getPlaceholder} />
                 <button onClick={this.onAddNote}>Add Note</button>

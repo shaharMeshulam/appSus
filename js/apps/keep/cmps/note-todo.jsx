@@ -1,8 +1,9 @@
 export function NoteTodo({ note }) {
     return (
         <div className="note">
-            {note.title && <h1>{note.title}</h1>}
-            {note.txt && <h1>{note.txt}</h1>}
+            <ul>
+                {note.info.todos.map((todo, idx) => <li key={note.key + idx}>{todo.txt}</li>)}
+            </ul>
         </div>
     )
 }
