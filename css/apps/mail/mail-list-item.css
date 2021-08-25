@@ -1,0 +1,4 @@
+.mail-list-item-preview {
+    flex-grow: 1;
+    cursor: pointer;
+}

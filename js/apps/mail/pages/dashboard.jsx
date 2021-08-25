@@ -1,42 +1,23 @@
-import { mailService } from '../services/mail.service.js';
+const { Route } = ReactRouterDOM;
 import { MailNav } from '../cmps/mail-nav.jsx';
 import { Wall } from './wall.jsx';
+import { MailDetails } from './mail-details.jsx';
 
 const { withRouter } = ReactRouterDOM
 class _DashBoard extends React.Component {
-    state = {
-        type: null,
-        mails: null,
-    }
-
-    componentDidMount() {
-        const type = this.props.location.hash;
-        if (!type || !mailService.getTypes().some(t => t.includes(type.substring(1)))) this.props.history.push('/');
-        this.setState({ type: type.substring(1) }, this.getMailsForDisplay);
-    }
-
-    componentDidUpdate(prevProps, prevState) {
-        if(prevProps.location.hash !== this.props.location.hash) {
-            
-        }
-    }
-    
-
-    getMailsForDisplay = () => {
-        mailService.getMailsToDisplay(this.state.type)
-            .then(mails => this.setState({ mails }));
-    }
-
-    render() {
-        const { mails } = this.state;
+   render() {
+        console.log("render");
+        // const { mails } = this.state;
         return (
             <React.Fragment>
-                <section className="actions">
-
-                </section>
                 <div className="main-container flex">
                     <MailNav />
-                    <Wall mails={mails} />
+                    <Route path="/mail/:mailId" component={MailDetails} />
+                    <Route exact path="/mail" component={Wall} />
+                    {/* <Route exact path="/mail"
+                        render={(props) => (
+                            <Wall {...props} mails={mails} />
+                        )} /> */}
                 </div>
             </React.Fragment>
         )
