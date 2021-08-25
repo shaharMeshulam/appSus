@@ -1,6 +1,5 @@
-import { utilService } from '../services/util-service.js'
-import { storageService } from '../services/storage-service.js'
-
+import { utilService } from '../../../services/util.service.js'
+import { storageService } from '../../../services/storage.service.js'
 
 export const bookService = {
     getBooks,
@@ -10,7 +9,7 @@ export const bookService = {
     addGoogleBook
 }
 
-const gBooks = storageService.load('BooksDB') || [
+const gBooks = storageService.loadFromStorage('BooksDB') || [
     {
         "id": "OXeMG8wNskc",
         "title": "metus hendrerit",
@@ -497,5 +496,5 @@ function addGoogleBook(googleBook) {
     book.thumbnail = (googleBook.volumeInfo.imageLinks) ? googleBook.volumeInfo.imageLinks.thumbnail : ''
     book.listPrice = { isOnSale: false, amount: utilService.getRndInt(10, 200), currencyCode: "USD", }
     gBooks.push(book)
-    storageService.save('BooksDB', gBooks)
+    storageService.saveToStorage('BooksDB', gBooks)
 }

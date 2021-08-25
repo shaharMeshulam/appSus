@@ -1,6 +1,6 @@
 const { Link } = ReactRouterDOM
 
-import { utilService } from '../../services/util.service.js'
+import { utilService } from '../../../services/util.service.js'
 
 export function BookPreview({ book }) {
     const { isOnSale } = book.listPrice

@@ -1,6 +1,6 @@
-import { bookService } from '../../../services/books-service.js'
-import { BookList } from '../BookList.jsx'
-import { BookFilter } from '../BookFilter.jsx'
+import { bookService } from '../service/books-service.js'
+import { BookList } from '../cmps/BookList.jsx'
+import { BookFilter } from '../cmps/BookFilter.jsx'
 
 export class BookApp extends React.Component {
 
