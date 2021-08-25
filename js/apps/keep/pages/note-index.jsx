@@ -6,6 +6,10 @@ export class KeepApp extends React.Component {
         notes: null
     }
     componentDidMount() {
+        this.loadNotes()
+    }
+
+    loadNotes = () => {
         noteService.getNotes().then(notes => {
             this.setState({ notes })
         }
@@ -16,7 +20,7 @@ export class KeepApp extends React.Component {
         const { notes } = this.state
         return (
             <section className="keep-app">
-                <NoteAdd />
+                <NoteAdd loadNotes={this.loadNotes} />
                 {notes && <NoteList notes={notes} />}
             </section>
         )

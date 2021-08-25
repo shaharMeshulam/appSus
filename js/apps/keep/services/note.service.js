@@ -10,9 +10,13 @@ function getNotes() {
 }
 
 function addNote(note) {
-    note.id = utilService.makeId(8)
-    gNotes.push(note)
-    console.log('success', gNotes);
+    for (const key in note.info) {
+        if (note.info[key]) {
+            note.id = utilService.makeId(8)
+            gNotes.push(note)
+            return
+        }
+    }
 }
 
 const gNotes = [
@@ -27,21 +31,21 @@ const gNotes = [
         isPinned: true,
         info: { txt: "Fullstack Medasdasd Baby!" }
     },
-    // {
-    //     id: "n102",
-    //     type: "note-img",
-    //     info: {
-    //         url: "http://some-img/me",
-    //         title: "Bobi and Me"
-    //     },
-    //     style: { backgroundColor: "#00d" }
-    // },
-    // {
-    //     id: "n103",
-    //     type: "note-todos",
-    //     info: {
-    //         label: "Get my stuff together",
-    //         todos: [{ txt: "Driving liscence", doneAt: null }, { txt: "Coding power", doneAt: 187111111 }]
-    //     }
-    // }
+    {
+        id: "n112302",
+        type: "note-img",
+        info: {
+            url: "https://i.stack.imgur.com/Op6dK.png",
+            title: "Bobi and Me"
+        },
+        style: { backgroundColor: "#00d" }
+    },
+    {
+        id: "n103",
+        type: "note-todos",
+        info: {
+            label: "Get my stuff together",
+            todos: [{ txt: "Driving liscence", doneAt: null }, { txt: "Coding power", doneAt: 187111111 }]
+        }
+    }
 ];
