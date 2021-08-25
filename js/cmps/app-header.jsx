@@ -8,7 +8,7 @@ function _AppHeader() {
       <h2><NavLink to="/">AppSus</NavLink></h2>
       <nav>
         <NavLink to="/">Home</NavLink>
-        <NavLink to="/mail" >Mail</NavLink>
+        <NavLink to="/mail#inbox" >Mail</NavLink>
         <NavLink to="/keep" >Notes</NavLink>
         <NavLink to="/book" >Books</NavLink>
         <NavLink to="/about" >About</NavLink>

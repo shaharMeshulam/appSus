@@ -1,0 +1,10 @@
+.mail-preview {
+    flex-grow: 1;
+    width: 200px
+}
+
+.mail-preview-content {
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    overflow: hidden;
+}
