@@ -27,12 +27,12 @@ class _MailListItem extends React.Component {
         return (
             <li className="mail-list-item flex">
                 <input type="checkbox" name="check" id="check" checked={isChecked} onChange={this.onChange} />
-                {/* <Link to={`/mail/${mail.id}`} className="flex"> */}
-                <div className={`flex mail-list-item-preview ${!mail.isRead && 'bold'}`} onClick={() => this.onOpenMail(mail.id)}>
+                <Link to={`/mail/${mail.id}`} className={`flex mail-list-item-preview ${!mail.isRead && 'bold'}`}>
+                {/* <div className={`flex mail-list-item-preview ${!mail.isRead && 'bold'}`} onClick={() => this.onOpenMail(mail.id)}> */}
                     <span className="sender-name">{mail.from}</span>
                     <MailPreview subject={mail.subject} txt={mail.txt} isRead={mail.isRead} timeStamp={mail.timeStamp} />
-                </div>
-                {/* </Link> */}
+                {/* </div> */}
+                </Link>
                 <MailDate timeStamp={mail.timeStamp} />
             </li>
         )
