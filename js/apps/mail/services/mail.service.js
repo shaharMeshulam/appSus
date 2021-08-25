@@ -11,7 +11,8 @@ let gMails = storageService.loadFromStorage(DB_KEY) || [];
 export const mailService = {
     getMailsToDisplay,
     addMail,
-    getTypes
+    getTypes,
+    getEmailById
 };
 
 init();
@@ -45,6 +46,10 @@ function addMail(mail, timeStamp = Date.now(), isDraft = false, isStared = false
     mail.isStared = isStared,
     mail.isInTrash = isInTrash;
     gMails.push(mail);
+}
+
+function getEmailById(id) {
+    return Promise.resolve(gMails.find(mail => mail.id === id));
 }
 
 function _createMails() {
@@ -315,6 +320,7 @@ function _createMails() {
         status: 'unRead',
         from: USER.mail
     };
+    addMail(mail)
     
     storageService.saveToStorage(DB_KEY, gMails);
 }
