@@ -1,0 +1,6 @@
+.car-list {
+  display: flex;
+  margin-block: 30px;
+  flex-wrap: wrap;
+  gap: 15px;
+}
