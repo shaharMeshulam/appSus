@@ -22,10 +22,10 @@ export class MailDetails extends React.Component {
         return (
             <div className="mail-details">
                 <div className="mail-details-container flex direction-column">
-                    <div class="flex justify-between">
+                    <div className="flex justify-between">
                         <p className="mail-details-from">{mail.from}</p><MailDate timeStamp={mail.timeStamp} />
                     </div>
-                    <pre class="mail-detail-txt">
+                    <pre className="mail-detail-txt">
                         {mail.txt}
                     </pre>
                 </div>

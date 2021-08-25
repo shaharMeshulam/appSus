@@ -20,4 +20,4 @@ function _AppHeader() {
     </header>
   )
 }
-export const AppHeader = withRouter(_AppHeader)
+export const AppHeader = withRouter(_AppHeader);
