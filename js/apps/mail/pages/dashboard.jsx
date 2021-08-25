@@ -10,15 +10,19 @@ class _DashBoard extends React.Component {
     }
 
     componentDidMount() {
-        const type = this.props.location.hash;
-        if (!type || !mailService.getTypes().some(t => t.includes(type.substring(1)))) this.props.history.push('/');
-        this.setState({ type: type.substring(1) }, this.getMailsForDisplay);
+        this.setTypeFromHash();
     }
 
     componentDidUpdate(prevProps, prevState) {
         if(prevProps.location.hash !== this.props.location.hash) {
-            
+            this.setTypeFromHash();
         }
+    }
+
+    setTypeFromHash =() => {
+        const type = this.props.location.hash;
+        if (!type || !mailService.getTypes().some(t => t.includes(type.substring(1)))) this.props.history.push('/');
+        this.setState({ type: type.substring(1) }, this.getMailsForDisplay);
     }
     
 
