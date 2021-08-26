@@ -51,14 +51,14 @@ export class Wall extends React.Component {
         })
     }
     render() {
-        const {mails} = this.state;
+        const { mails, type } = this.state;
         if (!mails) return <section className="wall">loading</section>
         return (
             <section className="wall">
                 <section className="actions">
                     <input type="checkbox" onChange={this.onToggleCheckAll} />
                 </section>
-                <MailList mails={mails} />
+                <MailList mails={mails} type={type} />
             </section>
         )
     }

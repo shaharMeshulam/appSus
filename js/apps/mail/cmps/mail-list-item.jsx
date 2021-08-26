@@ -52,7 +52,7 @@ class _MailListItem extends React.Component {
     }
 
     render() {
-        const { mail } = this.props;
+        const { mail, type } = this.props;
         const { isDraft } = mail.status;
         const { isChecked, isMouseOver } = this.state
         return (
@@ -64,7 +64,7 @@ class _MailListItem extends React.Component {
                     star
                 </span>}
                 <input type="checkbox" name="check" id="check" checked={isChecked} onChange={this.onChange} />
-                {!isDraft && <Link to={`/mail/${mail.id}`} className={`flex mail-list-item-preview ${!mail.status.isRead && 'bold'}`}>
+                {!isDraft && <Link to={`/mail/${mail.id}#${type}`} className={`flex mail-list-item-preview ${!mail.status.isRead && 'bold'}`}>
                     <span className="sender-name">{this.getSenderName()}</span>
                     <MailPreview subject={mail.subject} body={mail.body} isRead={mail.status.isRead} sentAt={mail.sentAt} />
                 </Link>}
