@@ -1,0 +1,20 @@
+.mail-edit {
+    height: 100%;
+}
+
+.mail-edit-form {
+    height: 100%;
+}
+
+.mail-edit-form > * {
+    margin-bottom: 10px;
+}
+
+.mail-edit-form > *:last-child {
+    margin-bottom: 0;
+}
+
+.mail-edit-body {
+    margin: 0;
+    flex-grow: 1;
+}

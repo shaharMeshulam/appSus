@@ -1,0 +1,17 @@
+.floating-mail-editor {
+    position: fixed;
+    bottom: 0;
+    right: 25px;
+    height: 350px;
+    border: 1px solid #202124;
+}
+
+.floating-mail-editor-header {
+    background-color: #404040;
+    color: white;
+    padding: 10px;
+}
+
+.floating-mail-editor .mail-edit {
+    padding: 10px;
+}

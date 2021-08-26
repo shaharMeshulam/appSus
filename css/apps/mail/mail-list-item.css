@@ -1,4 +1,28 @@
+.mail-list-item {
+    background-color: rgba(242,245,245,0.8);
+    border-bottom: 1px solid rgb(128, 128, 128);
+    height: 45px;
+}
+
+.mail-list-item:first-child {
+    border-top: 1px solid rgb(128, 128, 128);
+}
+
+.mail-list-item.mail-list-item-read {
+    background-color: #fff;
+}
+
 .mail-list-item-preview {
     flex-grow: 1;
     cursor: pointer;
+    margin-right: 20px
+}
+
+.mail-list-item-preview .sender-name {
+    flex-basis: 168px;
+    max-width: 168px;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    overflow: hidden;
+    margin-inline-end: 15px;
 }

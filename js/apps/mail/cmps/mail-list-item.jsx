@@ -1,13 +1,15 @@
 
 const { Link, withRouter } = ReactRouterDOM
+import { eventBusService } from "../../../services/event-bus-service.js";
 import { mailService } from "../services/mail.service.js";
+import { MailActions } from "./mail-actions.jsx";
 import { MailDate } from "./mail-date.jsx";
 import { MailPreview } from "./mail-preview.jsx";
 
-
 class _MailListItem extends React.Component {
     state = {
-        isChecked: this.props.isChecked || false
+        isChecked: this.props.isChecked || false,
+        isMouseOver: false
     }
 
     onChange = () => {
@@ -21,23 +23,57 @@ class _MailListItem extends React.Component {
     onOpenMail = (mailId) => {
         this.props.history.push(`/mail/${mailId}`);
     }
-    
+
     getSenderName() {
         const { mail } = this.props;
         return (mail.from === mailService.getUser().mail) ? `to: ${mail.to}` : mail.from;
     }
 
+    onMouseOver = () => {
+        this.setState({ isMouseOver: true })
+    }
+
+    onMouseLeave = () => {
+        this.setState({ isMouseOver: false })
+    }
+
+    onRemove = () => {
+        mailService.remove(this.props.mail.id)
+            .then(() => eventBusService.emit('mail-change'));
+    }
+
+    onStarToggle = (mailId) => {
+        mailService.toggleStared(mailId)
+            .then(() => eventBusService.emit('mail-change'));
+    }
+
+    onEditMail = () => { 
+        eventBusService.emit('mail-edit', this.props.mail.id);
+    }
+
     render() {
         const { mail } = this.props;
-        const { isChecked } = this.state
+        const { isDraft } = mail.status;
+        const { isChecked, isMouseOver } = this.state
         return (
-            <li className="mail-list-item flex">
+            <li className={`mail-list-item ${mail.isRead ? 'mail-list-item-red' : ''} flex align-center`} onMouseOver={this.onMouseOver} onMouseLeave={this.onMouseLeave}>
+                {!mail.status.isStared && <span className="btn material-icons-outlined" onClick={() => this.onStarToggle(mail.id)}>
+                    star_outline
+                </span>}
+                {mail.status.isStared && <span className="btn material-icons-outlined" onClick={() => this.onStarToggle(mail.id)}>
+                    star
+                </span>}
                 <input type="checkbox" name="check" id="check" checked={isChecked} onChange={this.onChange} />
-                <Link to={`/mail/${mail.id}`} className={`flex mail-list-item-preview ${!mail.isRead && 'bold'}`}>
+                {!isDraft && <Link to={`/mail/${mail.id}`} className={`flex mail-list-item-preview ${!mail.status.isRead && 'bold'}`}>
                     <span className="sender-name">{this.getSenderName()}</span>
-                    <MailPreview subject={mail.subject} txt={mail.txt} isRead={mail.isRead} timeStamp={mail.timeStamp} />
-                </Link>
-                <MailDate timeStamp={mail.timeStamp} />
+                    <MailPreview subject={mail.subject} body={mail.body} isRead={mail.status.isRead} sentAt={mail.sentAt} />
+                </Link>}
+                {isDraft && <div className={'flex mail-list-item-preview'} onClick={this.onEditMail}>
+                    <span className="sender-name">{this.getSenderName()}</span>
+                    <MailPreview subject={mail.subject} body={mail.body} isRead={mail.status.isRead} sentAt={mail.sentAt} />
+                </div>}
+                {!isMouseOver && <MailDate sentAt={mail.sentAt} />}
+                {isMouseOver && <MailActions onRemove={this.onRemove} />}
             </li>
         )
     }

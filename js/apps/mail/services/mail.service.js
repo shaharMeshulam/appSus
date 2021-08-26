@@ -13,7 +13,9 @@ export const mailService = {
     addMail,
     getTypes,
     getEmailById,
-    getUser
+    getUser,
+    remove,
+    toggleStared
 };
 
 init();
@@ -26,13 +28,15 @@ function init() {
 function getMailsToDisplay(type) {
     switch (type) {
         case 'inbox':
-            return Promise.resolve(gMails.filter(mail => mail.to === USER.mail && !mail.isInTrash));
+            return Promise.resolve(gMails.filter(mail => mail.status.isInbox === true && !mail.status.isInTrash));
         case 'sent':
-            return Promise.resolve(gMails.filter(mail => mail.from === USER.mail && !mail.isInTrash));
+            return Promise.resolve(gMails.filter(mail => mail.status.isSent === true && !mail.status.isInTrash));
         case 'stared':
-            return Promise.resolve(gMails.filter(mail => mail.isStared));
+            return Promise.resolve(gMails.filter(mail => mail.status.isStared));
         case 'trash':
-            return Promise.resolve(gMails.filter(mail => mail.isInTrash));
+            return Promise.resolve(gMails.filter(mail => mail.status.isInTrash));
+        case 'draft':
+            return Promise.resolve(gMails.filter(mail => mail.status.isDraft));
     }
 }
 
@@ -44,17 +48,53 @@ function getUser() {
     return USER;
 }
 
-function addMail(mail, timeStamp = Date.now(), isDraft = false, isStared = false, isInTrash = false) {
-    mail.id = utilService.makeId();
-    mail.timeStamp = timeStamp;
-    mail.isDraft = isDraft;
-    mail.isStared = isStared,
-    mail.isInTrash = isInTrash;
-    gMails.push(mail);
+function addMail(mail, id = utilService.makeId(), sentAt = Date.now()) { // ADD STATUS - draft -sent -inbox
+    return new Promise((resolve, reject) => {
+        if (mail.id) {
+            getEmailById(mail.id)
+                .then(m => {
+                    if (m) {
+                        m = mail;
+                        m.sentAt = sentAt;
+                        storageService.saveToStorage(DB_KEY, gMails);
+                        resolve();
+                    } else {
+                        mail.id = id;
+                        mail.sentAt = sentAt;
+                        gMails.push(mail);
+                        storageService.saveToStorage(DB_KEY, gMails);
+                        resolve();
+                    }
+                });
+        }
+    })
 }
 
 function getEmailById(id) {
     return Promise.resolve(gMails.find(mail => mail.id === id));
+}
+
+function remove(mailId) {
+    return getEmailById(mailId)
+        .then(mail => {
+            if (!mail) return;
+            const idx = gMails.findIndex(mail => mail.id === mailId);
+            if (mail.status.isInTrash) {
+                gMails.splice(idx, 1);
+            } else {
+                gMails[idx].status.isInTrash = true;
+            }
+            storageService.saveToStorage(DB_KEY, gMails);
+        });
+}
+
+function toggleStared(mailId) {
+    return this.getEmailById(mailId)
+        .then(mail => {
+            mail.status.isStared = !mail.status.isStared;
+            storageService.saveToStorage(DB_KEY, gMails);
+        });
+
 }
 
 function _createMails() {
@@ -63,7 +103,7 @@ function _createMails() {
     let mail = {
         to: USER.mail,
         subject: 'oripilpel invited you to oripilpel/AppSUS‏‏',
-        txt: `@oripilpel has invited you to collaborate on the
+        body: `@oripilpel has invited you to collaborate on the
         oripilpel/AppSUS repository
         You can accept or decline this invitation. You can also head over to https://github.com/oripilpel/AppSUS to check out the repository or visit @oripilpel to learn a bit more about them.
         
@@ -71,14 +111,21 @@ function _createMails() {
         
         View invitation
         Note: This invitation was intended for shahar.mesh@gmail.com. If you were not expecting this invitation, you can ignore this email. If @oripilpel is sending you too many emails, you can block them or report abuse.`,
-        status: 'unRead',
         from: 'noreply@github.com‏',
+        status: {
+            isInbox: true,
+            isSent: false,
+            isRead: false,
+            isDraft: false,
+            isStared: false,
+            isInTrash: false
+        }
     };
     addMail(mail);
     mail = {
         to: USER.mail,
         subject: 'שחר, בהמשך לביקורך באפליקציית לאומי...‏‏',
-        txt: `@אם אינך רואה מייל זה יש ללחוץ כאן
+        body: `@אם אינך רואה מייל זה יש ללחוץ כאן
  
         leumi digital	
         
@@ -103,14 +150,21 @@ function _createMails() {
         לקבלת סיוע במענה על הסקר לאנשים עם מוגבלות פנו אלינו בכתובת: Negishut.leumi@bankleumi.co.il
          
         בנק לאומי, יהודה הלוי 35 תל אביב, מיקוד 6513657 | יצירת קשר: מרכז בנקאות (לאומי callי) 5522*`,
-        status: 'unRead',
-        from: 'info@digital.leumi.co.il‏‏'
+        from: 'info@digital.leumi.co.il‏‏',
+        status: {
+            isInbox: true,
+            isSent: false,
+            isRead: false,
+            isDraft: false,
+            isStared: false,
+            isInTrash: false
+        }
     };
     addMail(mail);
     mail = {
         to: USER.mail,
         subject: 'The Overflow #88: Building a better developer platform‏‏‏‏',
-        txt: `AUGUST
+        body: `AUGUST
         Welcome to ISSUE #88 of The Overflow! This newsletter is by developers, for developers, written and curated by the Stack Overflow team and Cassidy Williams at Netlify. This week: we discuss the close of the Prosus deal with our CEO, figure out how to change matrix values in R, and add machine learning to our humble Jamstack sites.
             
         From the blog
@@ -160,15 +214,22 @@ function _createMails() {
         
         You’re receiving this email because you are subscribed to The Overflow Newsletter from Stack Overflow.
         Unsubscribe from emails like this     Edit email settings     Contact us     Privacy`,
-        status: 'unRead',
-        from: 'do-not-reply@stackoverflow.email‏‏'
+        from: 'do-not-reply@stackoverflow.email‏‏',
+        status: {
+            isInbox: true,
+            isSent: false,
+            isRead: false,
+            isDraft: false,
+            isStared: false,
+            isInTrash: false
+        }
     };
     addMail(mail);
     // SENT
     mail = {
         to: 'studio.diana.p@gmail.com‬',
         subject: 'marerials‏‏‏‏',
-        txt: `AUGUST
+        body: `AUGUST
         Welcome to ISSUE #88 of The Overflow! This newsletter is by developers, for developers, written and curated by the Stack Overflow team and Cassidy Williams at Netlify. This week: we discuss the close of the Prosus deal with our CEO, figure out how to change matrix values in R, and add machine learning to our humble Jamstack sites.
             
         From the blog
@@ -218,24 +279,29 @@ function _createMails() {
         
         You’re receiving this email because you are subscribed to The Overflow Newsletter from Stack Overflow.
         Unsubscribe from emails like this     Edit email settings     Contact us     Privacy`,
-        status: 'unRead',
-        from: USER.mail
+        from: USER.mail,
+        status: {
+            isInbox: false,
+            isSent: true,
+            isRead: false,
+            isDraft: false,
+            isStared: false,
+            isInTrash: false
+        }
     };
     addMail(mail);
     mail = {
         to: '‫oahdout85@gmail.com‬‬',
         subject: 'contract',
-        txt: `Does this sound familiar?
+        body: `Does this sound familiar?
 
         You work really hard on a killer piece of content or curate something you know your audience is going to love.
         
         You get super excited... you load it up... hit "Post"... annnnnnnnd...
         
-        
         Crickets.
         
         It keeps happening so you try things like...
-        
         
         Asking questions
         Using hashtags
@@ -273,24 +339,27 @@ function _createMails() {
         Co-Founder & CEO
         DigitalMarketer
         
-         
-        
-         
-         
         Sent to: shahar.mesh@gmail.com
         DigitalMarketer, 4330 Gaines Ranch Loop, 120, Austin, TX 78735, United States
         
         Know someone who’d like this email? Forward it to a friend!
         Did someone forward this email to you? Become a subscriber!
         Don't want future emails? Unsubscribe`,
-        status: 'unRead',
-        from: USER.mail
+        from: USER.mail,
+        status: {
+            isInbox: false,
+            isSent: true,
+            isRead: false,
+            isDraft: false,
+            isStared: false,
+            isInTrash: false
+        }
     };
     addMail(mail);
     mail = {
         to: 'r‫evital@opster.com‬',
         subject: 'about our discution',
-        txt: `Shahar,
+        body: `Shahar,
 
         What is the only social media strategy that consistently drives fans & followers to your funnels FAST and reach millions for FREE...
         
@@ -322,11 +391,18 @@ function _createMails() {
         Know someone who’d like this email? Forward it to a friend!
         Did someone forward this email to you? Become a subscriber!
         Don't want future emails? Unsubscribe`,
-        status: 'unRead',
-        from: USER.mail
+        from: USER.mail,
+        status: {
+            isInbox: false,
+            isSent: true,
+            isRead: false,
+            isDraft: false,
+            isStared: false,
+            isInTrash: false
+        }
     };
     addMail(mail)
-    
-    storageService.saveToStorage(DB_KEY, gMails);
+
+    // storageService.saveToStorage(DB_KEY, gMails);
 }
 

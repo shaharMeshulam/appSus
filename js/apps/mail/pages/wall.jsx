@@ -1,4 +1,5 @@
 
+import { eventBusService } from "../../../services/event-bus-service.js";
 import { MailList } from "../cmps/mail-list.jsx";
 import { mailService } from '../services/mail.service.js';
 
@@ -9,12 +10,18 @@ export class Wall extends React.Component {
         isAllChecked: false
     }
 
+    removeEventBus
+
     componentDidMount() {
         this.setTypeFromHash();
+        this.removeEventBus = eventBusService.on('mail-change', this.getMailsForDisplay)
     }
 
     componentDidUpdate(prevProps, prevState) {
         if (prevProps.location.hash !== this.props.location.hash) this.setTypeFromHash();
+    }
+    componentWillUnmount() {
+        this.removeEventBus();
     }
 
     setTypeFromHash = () => {
