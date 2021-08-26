@@ -3,11 +3,17 @@
 @import url(./parts/fonts.css);
 @import url(./cmps/app-home.css);
 @import url(./cmps/user-msg.css);
-@import url(./apps/keep/note-preview.css);
+
 @import url(./apps/mail/mail-preview.css);
 @import url(./apps/mail/mail-details.css);
-@import url(./apps//mail/mail-list-item.css);
+@import url(./apps/mail/mail-list-item.css);
+@import url(./apps/mail/mail-nav.css);
+@import url(./apps/mail/floating-mail-editor.css);
+@import url(./apps/mail/mail-editor.css);
 @import url(./apps/mail/wall.css);
+
+
+@import url(./apps/keep/note-preview.css);
 @import url(./apps/keep/note-list.css);
 @import url(./apps/keep/note.css);
 @import url(./apps/keep/note-action.css);

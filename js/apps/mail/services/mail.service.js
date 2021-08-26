@@ -13,7 +13,10 @@ export const mailService = {
     addMail,
     getTypes,
     getEmailById,
-    getUser
+    getUser,
+    remove,
+    toggleStared,
+    setMailIsRead
 };
 
 init();
@@ -26,13 +29,15 @@ function init() {
 function getMailsToDisplay(type) {
     switch (type) {
         case 'inbox':
-            return Promise.resolve(gMails.filter(mail => mail.to === USER.mail && !mail.isInTrash));
+            return Promise.resolve(gMails.filter(mail => mail.status.isInbox === true && !mail.status.isInTrash));
         case 'sent':
-            return Promise.resolve(gMails.filter(mail => mail.from === USER.mail && !mail.isInTrash));
+            return Promise.resolve(gMails.filter(mail => mail.status.isSent === true && !mail.status.isInTrash));
         case 'stared':
-            return Promise.resolve(gMails.filter(mail => mail.isStared));
+            return Promise.resolve(gMails.filter(mail => mail.status.isStared));
         case 'trash':
-            return Promise.resolve(gMails.filter(mail => mail.isInTrash));
+            return Promise.resolve(gMails.filter(mail => mail.status.isInTrash));
+        case 'draft':
+            return Promise.resolve(gMails.filter(mail => mail.status.isDraft));
     }
 }
 
@@ -44,17 +49,59 @@ function getUser() {
     return USER;
 }
 
-function addMail(mail, timeStamp = Date.now(), isDraft = false, isStared = false, isInTrash = false) {
-    mail.id = utilService.makeId();
-    mail.timeStamp = timeStamp;
-    mail.isDraft = isDraft;
-    mail.isStared = isStared,
-    mail.isInTrash = isInTrash;
-    gMails.push(mail);
+function addMail(mail, id = utilService.makeId(), sentAt = Date.now()) { // ADD STATUS - draft -sent -inbox
+    return new Promise((resolve, reject) => {
+        getEmailById(mail.id)
+            .then(m => {
+                if (m) {
+                    m = mail;
+                    m.sentAt = sentAt;
+                    storageService.saveToStorage(DB_KEY, gMails);
+                    resolve();
+                } else {
+                    mail.id = id;
+                    mail.sentAt = sentAt;
+                    gMails.push(mail);
+                    storageService.saveToStorage(DB_KEY, gMails);
+                    resolve();
+                }
+            });
+    })
 }
 
 function getEmailById(id) {
     return Promise.resolve(gMails.find(mail => mail.id === id));
+}
+
+function remove(mailId) {
+    return getEmailById(mailId)
+        .then(mail => {
+            if (!mail) return;
+            const idx = gMails.findIndex(mail => mail.id === mailId);
+            if (mail.status.isInTrash) {
+                gMails.splice(idx, 1);
+            } else {
+                gMails[idx].status.isInTrash = true;
+            }
+            storageService.saveToStorage(DB_KEY, gMails);
+        });
+}
+
+function toggleStared(mailId) {
+    return this.getEmailById(mailId)
+        .then(mail => {
+            mail.status.isStared = !mail.status.isStared;
+            storageService.saveToStorage(DB_KEY, gMails);
+        });
+
+}
+
+function setMailIsRead(mailId, isRead) {
+    return this.getEmailById(mailId)
+        .then(mail => {
+            mail.status.isRead = isRead;
+            storageService.saveToStorage(DB_KEY, gMails);
+        });
 }
 
 function _createMails() {
@@ -63,7 +110,7 @@ function _createMails() {
     let mail = {
         to: USER.mail,
         subject: 'oripilpel invited you to oripilpel/AppSUS‏‏',
-        txt: `@oripilpel has invited you to collaborate on the
+        body: `@oripilpel has invited you to collaborate on the
         oripilpel/AppSUS repository
         You can accept or decline this invitation. You can also head over to https://github.com/oripilpel/AppSUS to check out the repository or visit @oripilpel to learn a bit more about them.
         
@@ -71,14 +118,21 @@ function _createMails() {
         
         View invitation
         Note: This invitation was intended for shahar.mesh@gmail.com. If you were not expecting this invitation, you can ignore this email. If @oripilpel is sending you too many emails, you can block them or report abuse.`,
-        status: 'unRead',
         from: 'noreply@github.com‏',
+        status: {
+            isInbox: true,
+            isSent: false,
+            isRead: false,
+            isDraft: false,
+            isStared: false,
+            isInTrash: false,
+        }
     };
     addMail(mail);
     mail = {
         to: USER.mail,
         subject: 'שחר, בהמשך לביקורך באפליקציית לאומי...‏‏',
-        txt: `@אם אינך רואה מייל זה יש ללחוץ כאן
+        body: `@אם אינך רואה מייל זה יש ללחוץ כאן
  
         leumi digital	
         
@@ -103,14 +157,21 @@ function _createMails() {
         לקבלת סיוע במענה על הסקר לאנשים עם מוגבלות פנו אלינו בכתובת: Negishut.leumi@bankleumi.co.il
          
         בנק לאומי, יהודה הלוי 35 תל אביב, מיקוד 6513657 | יצירת קשר: מרכז בנקאות (לאומי callי) 5522*`,
-        status: 'unRead',
-        from: 'info@digital.leumi.co.il‏‏'
+        from: 'info@digital.leumi.co.il‏‏',
+        status: {
+            isInbox: true,
+            isSent: false,
+            isRead: false,
+            isDraft: false,
+            isStared: false,
+            isInTrash: false
+        }
     };
     addMail(mail);
     mail = {
         to: USER.mail,
         subject: 'The Overflow #88: Building a better developer platform‏‏‏‏',
-        txt: `AUGUST
+        body: `AUGUST
         Welcome to ISSUE #88 of The Overflow! This newsletter is by developers, for developers, written and curated by the Stack Overflow team and Cassidy Williams at Netlify. This week: we discuss the close of the Prosus deal with our CEO, figure out how to change matrix values in R, and add machine learning to our humble Jamstack sites.
             
         From the blog
@@ -160,15 +221,232 @@ function _createMails() {
         
         You’re receiving this email because you are subscribed to The Overflow Newsletter from Stack Overflow.
         Unsubscribe from emails like this     Edit email settings     Contact us     Privacy`,
-        status: 'unRead',
-        from: 'do-not-reply@stackoverflow.email‏‏'
+        from: 'do-not-reply@stackoverflow.email‏‏',
+        status: {
+            isInbox: true,
+            isSent: false,
+            isRead: false,
+            isDraft: false,
+            isStared: false,
+            isInTrash: false
+        }
     };
     addMail(mail);
+    mail = {
+        to: USER.mail,
+        subject: 'Smart Plug WiFi Socket 16A Power Monitor Timing Function SmartLife APP ControlHover to zoom‏‏‏‏',
+        body: `thumbnail 1 - Smart Plug WiFi Socket 16A Power Monitor Timing Function SmartLife APP Control
+        
+        thumbnail 2 - Smart Plug WiFi Socket 16A Power Monitor Timing Function SmartLife APP Control
+        
+        thumbnail 3 - Smart Plug WiFi Socket 16A Power Monitor Timing Function SmartLife APP Control
+        
+        thumbnail 4 - Smart Plug WiFi Socket 16A Power Monitor Timing Function SmartLife APP Control
+        
+        thumbnail 5 - Smart Plug WiFi Socket 16A Power Monitor Timing Function SmartLife APP Control
+        
+        thumbnail 6 - Smart Plug WiFi Socket 16A Power Monitor Timing Function SmartLife APP Control
+        
+        thumbnail 7 - Smart Plug WiFi Socket 16A Power Monitor Timing Function SmartLife APP Control
+        
+        Shop with confidence
+        eBay Money Back Guarantee
+        Get the item you ordered or get your money back. Learn more- eBay Money Back Guarantee - opens in new window or tab
+        Seller information
+        happyshopping0 (69 )
+        94.6% Positive feedback
+         Save this Seller
+        Contact seller
+        See other items
+        
+        Smart Plug WiFi Socket 16A Power Monitor Timing Function SmartLife APP Control
+        Popular Item 15 viewed per day
+        Condition:New
+        Type:
+        1pcs EU 16A plug
+        Quantity:
+        1
+        6 available / 2 sold
+        Price:
+        US $17.99
+        Approximately ILS 57.99
+        Add to cart
+         Add to Watchlist
+        Free
+        Shipping
+        30-day
+        Returns
+        Longtime
+        Member
+        Shipping:
+        FREE Economy International Shipping | See details
+        International shipment of items may be subject to customs processing and additional charges.  
+         
+        Located in:
+        HK, Hong Kong
+         
+        Ships to:
+        Worldwide
+        Delivery:
+        Estimated between Mon. Sep. 20 and Thu. Nov. 11
+        Seller ships within 5 days after receiving cleared payment- opens in a new window or tab.  
+        Payments:
+        PayPal Google Pay Visa Master Card Amex Discover
+        Returns:
+        30 day returns. Buyer pays for return shipping |  See details
+        `,
+        from: 'ebay@reply5.ebay.com‏',
+        status: {
+            isInbox: true,
+            isSent: false,
+            isRead: false,
+            isDraft: false,
+            isStared: false,
+            isInTrash: false
+        }
+    };
+    addMail(mail, utilService.makeId(), '2021-08-25T10:53:38+00:00');
+    mail = {
+        to: USER.mail,
+        subject: 'Updates to Reddit’s User Agreement and Privacy Policy‏‏‏‏',
+        body: `We're writing to let you know that we've updated Reddit's User Agreement, Privacy Policy, and Premium and Virtual Goods Agreement. These updated terms will take effect on September 12, 2021, and they will apply to you if you use Reddit after September 12.
+
+We encourage you to review the updated terms in full. Here are some of the highlights:
+
+We made small updates throughout our terms to make them clearer and more specific.
+
+We updated some information based on where you use our services. Now there is a separate User Agreement for users located in the European Economic Area, United Kingdom, or Switzerland.
+
+We added terms to our Reddit Premium and Virtual Goods Agreement related to services obtained through third parties, cancellation, and for users in the EEA, UK, or Switzerland, withdrawal.
+
+We removed reference to Programmatic Advertising in our Privacy Policy as we no longer support it on our site.
+
+We clarified the transfer mechanism we rely upon for the transfer of personal data of EEA, UK, and Switzerland users.
+
+
+If you have questions, please visit Reddit Help.
+
+- Reddit
+	
+You are receiving this email because a Reddit account, shahar-mesh, is registered to this email address.
+548 Market St., #16093, San Francisco, CA 94104–5401`,
+        from: 'noreply@redditmail.com‏',
+        status: {
+            isInbox: true,
+            isSent: false,
+            isRead: false,
+            isDraft: false,
+            isStared: false,
+            isInTrash: false
+        }
+    };
+    addMail(mail, utilService.makeId(), '2021-08-24T04:53:38+00:00');
+    mail = {
+        to: USER.mail,
+        subject: 'Which altcoins can actually 1000x in the next 10 years?',
+        body: `Shahar's Digest
+        TOP STORIES FOR YOU
+        Which altcoins can actually 1000x in the next 10 years?
+        L. Sebastian Purcell, PhD		
+        L. Sebastian Purcell, PhD, Experienced Algorithmic Investor • Answered August 10
+        
+        This one is a little more realistic than most moonshot requests. 1000x returns, which would take you from $1000 to $1,000,000, over 10 years are doable. The biggest problem... Read More »
+        Why do software companies still use Java, when better programming languages like C# and .NET are available with great tooling support?
+        Alfredo Pinto		
+        Alfredo Pinto, works at Softtek • Answered March 16, 2018
+        
+        As a senior developer (18+ years) I will give you this advice: Avoid to all cost trying to find the best of everything like a religion seeking for the truth. There are no si... Read More »
+        
+        Too many students are joining Computer Science field. Is it likely that we will soon see way more CS graduates than the number actually required?
+        Bruce F. Webster		
+        Bruce F. Webster, Professor, Software Engineering at Brigham Young University (2017-present) • Answered June 9
+        
+        This is a cycle that happens roughly every 15-20 years, usually because people become convinced that a CS degree (or, nowadays, bootcamps and YouTube videos) are the easy r... Read More »
+        I lost 9.5 bitcoin to a scam. Is it possible to recover it?
+        Helen Rio Grande		
+        Helen Rio Grande, Associate Consultant | Data & Analytics at Slalom • Answered June 7
+        
+        Cryptocurrency scams have soared in recent months, new figures reveal, as victims report losing millions every week to criminals seeking to capitalize on the bitcoin craze. ... Read More »
+        Is Node.js the future of back-end technologies?
+        Dave Voorhis		
+        Dave Voorhis, Software entrepreneur, engineer, and educator for 35+ years. • Answered May 6
+        
+        The future, as in the only choice of back-end technology? Heavens, no. Listen — Node.js is perfectly fine for what it does and what it’s for. It’s a reasonable tool for certa... Read More »
+        Read More in Your Feed
+        Never miss a story. Designed for readers on the go.
+        Download on the App StoreGet it on Google Play
+        This email was sent by Quora (605 Castro Street, Mountain View, CA 94041).
+        If you don't want to receive this type of email in the future, please unsubscribe.
+        https://www.quora.com`,
+        from: 'english-digest-noreply@quora.com‏‏',
+        status: {
+            isInbox: true,
+            isSent: false,
+            isRead: false,
+            isDraft: false,
+            isStared: false,
+            isInTrash: false
+        }
+    };
+    addMail(mail, utilService.makeId(), '2021-08-24T04:53:38+00:00');
+    mail = {
+        to: USER.mail,
+        subject: 'I changed my mind‏‏',
+        body: `Shahar,
+
+        All week, we've been talking about Rachel Miller and her "Viral Funneling Formula."
+        
+        This is the exact formula that she's recently used to create 29 viral posts that each have resulted in more than a MILLION page views... and she's sharing it with all of us!
+        
+        This method will quickly:
+        
+        Flood your funnels with fans & followers... for free
+        Create an experience that people LOVE to engage with on your channels
+        Reach millions of die-hard fans who are eager to promote your content and grow your brand's reach quickly and reliably... whenever you want!
+        Turns social media strangers into raving customers without breaking the bank
+        Inject freedom, excitement, and FUN into your day so you fall in love with your business all over again
+        Make you a trusted authority in your niche
+        
+        ...all without using your wallet or needing a big following.
+        
+        When I first heard about it I didn't believe her but after she showed me her secret, I changed my mind.
+        
+        This is a must-see for anyone struggling to be seen on social media or lacking enough quality traffic for their offers.
+        
+        To be a part of this workshop, all you need to do is go here and register.
+        
+        But do it before it closes down soon!
+        
+        - Ryan
+        
+        P.S. You'll also get a whole bunch of bonuses plus a massive discount (83% to be exact) when you save your seat before this timer hits zero.
+        
+        Ryan Deiss
+        Co-Founder & CEO
+        DigitalMarketer
+         
+        Sent to: shahar.mesh@gmail.com
+        DigitalMarketer, 4330 Gaines Ranch Loop, 120, Austin, TX 78735, United States
+        
+        Know someone who’d like this email? Forward it to a friend!
+        Did someone forward this email to you? Become a subscriber!
+        Don't want future emails? Unsubscribe`,
+        from: 'members@digitalmarketer.com‏‏',
+        status: {
+            isInbox: true,
+            isSent: false,
+            isRead: false,
+            isDraft: false,
+            isStared: false,
+            isInTrash: false
+        }
+    };
+    addMail(mail, utilService.makeId(), '2021-08-23T15:53:38+00:00');
     // SENT
     mail = {
         to: 'studio.diana.p@gmail.com‬',
         subject: 'marerials‏‏‏‏',
-        txt: `AUGUST
+        body: `AUGUST
         Welcome to ISSUE #88 of The Overflow! This newsletter is by developers, for developers, written and curated by the Stack Overflow team and Cassidy Williams at Netlify. This week: we discuss the close of the Prosus deal with our CEO, figure out how to change matrix values in R, and add machine learning to our humble Jamstack sites.
             
         From the blog
@@ -218,24 +496,29 @@ function _createMails() {
         
         You’re receiving this email because you are subscribed to The Overflow Newsletter from Stack Overflow.
         Unsubscribe from emails like this     Edit email settings     Contact us     Privacy`,
-        status: 'unRead',
-        from: USER.mail
+        from: USER.mail,
+        status: {
+            isInbox: false,
+            isSent: true,
+            isRead: false,
+            isDraft: false,
+            isStared: false,
+            isInTrash: false
+        }
     };
     addMail(mail);
     mail = {
         to: '‫oahdout85@gmail.com‬‬',
         subject: 'contract',
-        txt: `Does this sound familiar?
+        body: `Does this sound familiar?
 
         You work really hard on a killer piece of content or curate something you know your audience is going to love.
         
         You get super excited... you load it up... hit "Post"... annnnnnnnd...
         
-        
         Crickets.
         
         It keeps happening so you try things like...
-        
         
         Asking questions
         Using hashtags
@@ -273,24 +556,27 @@ function _createMails() {
         Co-Founder & CEO
         DigitalMarketer
         
-         
-        
-         
-         
         Sent to: shahar.mesh@gmail.com
         DigitalMarketer, 4330 Gaines Ranch Loop, 120, Austin, TX 78735, United States
         
         Know someone who’d like this email? Forward it to a friend!
         Did someone forward this email to you? Become a subscriber!
         Don't want future emails? Unsubscribe`,
-        status: 'unRead',
-        from: USER.mail
+        from: USER.mail,
+        status: {
+            isInbox: false,
+            isSent: true,
+            isRead: false,
+            isDraft: false,
+            isStared: false,
+            isInTrash: false
+        }
     };
     addMail(mail);
     mail = {
         to: 'r‫evital@opster.com‬',
         subject: 'about our discution',
-        txt: `Shahar,
+        body: `Shahar,
 
         What is the only social media strategy that consistently drives fans & followers to your funnels FAST and reach millions for FREE...
         
@@ -322,11 +608,18 @@ function _createMails() {
         Know someone who’d like this email? Forward it to a friend!
         Did someone forward this email to you? Become a subscriber!
         Don't want future emails? Unsubscribe`,
-        status: 'unRead',
-        from: USER.mail
+        from: USER.mail,
+        status: {
+            isInbox: false,
+            isSent: true,
+            isRead: false,
+            isDraft: false,
+            isStared: false,
+            isInTrash: false
+        }
     };
     addMail(mail)
-    
-    storageService.saveToStorage(DB_KEY, gMails);
+
+    // storageService.saveToStorage(DB_KEY, gMails);
 }
 
