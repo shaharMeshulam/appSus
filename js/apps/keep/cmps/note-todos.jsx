@@ -13,14 +13,16 @@ export class NoteTodos extends React.Component {
     onMouseLeave = () => { this.setState({ showActions: false }) }
 
     render() {
-        const { note, onClick } = this.props
+        const { note, onClick, loadNotes } = this.props
+
         return (
-            <div className="todos-note note clickable" onClick={onClick} onMouseEnter={this.onMouseEnter} onMouseLeave={this.onMouseLeave}>
+            <div style={{ backgroundColor: (note.style) ? note.style.backgroundColor : 'white' }} className="todos-note note clickable" onClick={onClick} onMouseEnter={this.onMouseEnter} onMouseLeave={this.onMouseLeave}>
                 {note.info.title && <h2 className="note-title">{note.info.title}</h2>}
                 <ul>
-                    {note.info.todos.map((todo, idx) => <li key={`${note.key}${idx}`}>{todo.txt}</li>)}
+                    {note.info.todos.map((todo, idx) => <li key={`${note.key}${idx}`}>{todo.txt}<input onClick={(ev) => { ev.stopPropagation() }} type="checkbox"></input></li>)}
                 </ul>
-                {this.state.showActions && <NoteAction />}
+                {this.state.showActions && <NoteAction note={note} loadNotes={loadNotes} />}
+                {!this.state.showActions && <div className="note-action-placeholder"></div>}
             </div>
         )
     }

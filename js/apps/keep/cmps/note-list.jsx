@@ -5,19 +5,19 @@ import { NoteTodos } from './note-todos.jsx'
 
 const { Link } = ReactRouterDOM
 
-export function NoteList({ notes, onClick }) {
+export function NoteList({ notes, onClick, loadNotes }) {
     return (
         <section className="notes-list">
             {notes.map(note => {
                 switch (note.type) {
                     case 'note-txt':
-                        return <NoteTxt key={note.id} note={note} onClick={() => { onClick(`/keep/${note.id}`) }} />
+                        return <NoteTxt loadNotes={loadNotes} key={note.id} note={note} onClick={() => { onClick(`/keep/${note.id}`) }} />
                     case 'note-img':
-                        return <NoteImg key={note.id} note={note} onClick={() => { onClick(`/keep/${note.id}`) }} />
+                        return <NoteImg loadNotes={loadNotes} key={note.id} note={note} onClick={() => { onClick(`/keep/${note.id}`) }} />
                     case 'note-vid':
-                        return <NoteVid key={note.id} note={note} onClick={() => { onClick(`/keep/${note.id}`) }} />
+                        return <NoteVid loadNotes={loadNotes} key={note.id} note={note} onClick={() => { onClick(`/keep/${note.id}`) }} />
                     case 'note-todos':
-                        return <NoteTodos key={note.id} note={note} onClick={() => { onClick(`/keep/${note.id}`) }} />
+                        return <NoteTodos loadNotes={loadNotes} key={note.id} note={note} onClick={() => { onClick(`/keep/${note.id}`) }} />
                 }
             })}
         </section>

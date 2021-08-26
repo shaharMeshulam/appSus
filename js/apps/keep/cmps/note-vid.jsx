@@ -17,7 +17,8 @@ export class NoteVid extends React.Component {
             <div className="vid-note note clickable" onClick={onClick} onMouseEnter={this.onMouseEnter} onMouseLeave={this.onMouseLeave} >
                 {note.title && <h1>{note.title}</h1>}
                 {note.txt && <h1>{note.txt}</h1>}
-                {this.state.showActions && <NoteAction />}
+                {this.state.showActions && <NoteAction note={note}  />}
+                {!this.state.showActions && <div className="note-action-placeholder"></div>}
             </div >
         )
     }
