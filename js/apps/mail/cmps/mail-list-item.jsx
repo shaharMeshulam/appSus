@@ -5,6 +5,7 @@ import { mailService } from "../services/mail.service.js";
 import { MailActions } from "./mail-actions.jsx";
 import { MailDate } from "./mail-date.jsx";
 import { MailPreview } from "./mail-preview.jsx";
+import { MailStar } from "./mail-star.jsx";
 
 class _MailListItem extends React.Component {
     state = {
@@ -42,8 +43,8 @@ class _MailListItem extends React.Component {
             .then(() => eventBusService.emit('mail-change'));
     }
 
-    onStarToggle = (mailId) => {
-        mailService.toggleStared(mailId)
+    onStarToggle = () => {
+        mailService.toggleStared(this.props.mail.id)
             .then(() => eventBusService.emit('mail-change'));
     }
 
@@ -51,20 +52,21 @@ class _MailListItem extends React.Component {
         eventBusService.emit('mail-edit', this.props.mail.id);
     }
 
+    onToggleRead = () => {
+        const { mail } = this.props;
+        mailService.setMailIsRead(mail.id, !mail.status.isRead)
+            .then(() => eventBusService.emit('mail-change'));
+    }
+
     render() {
         const { mail, type } = this.props;
-        const { isDraft, isRead } = mail.status;
+        const { isDraft, isRead, isStared } = mail.status;
         const { isChecked, isMouseOver } = this.state
         console.log('isRead', isRead);
         return (
             <li className={`mail-list-item ${isRead && 'mail-list-item-read'} flex align-center`} onMouseOver={this.onMouseOver} onMouseLeave={this.onMouseLeave}>
-                {!mail.status.isStared && <span className="btn material-icons-outlined" onClick={() => this.onStarToggle(mail.id)}>
-                    star_outline
-                </span>}
-                {mail.status.isStared && <span className="btn material-icons-outlined" onClick={() => this.onStarToggle(mail.id)}>
-                    star
-                </span>}
                 <input type="checkbox" name="check" id="check" checked={isChecked} onChange={this.onChange} />
+                <MailStar isStared={isStared} onStarToggle={this.onStarToggle} />
                 {!isDraft && <Link to={`/mail/${mail.id}#${type}`} className={`flex mail-list-item-preview ${!isRead && 'bold'}`}>
                     <span className="sender-name">{this.getSenderName()}</span>
                     <MailPreview subject={mail.subject} body={mail.body} isRead={isRead} sentAt={mail.sentAt} />
@@ -74,7 +76,7 @@ class _MailListItem extends React.Component {
                     <MailPreview subject={mail.subject} body={mail.body} isRead={isRead} sentAt={mail.sentAt} />
                 </div>}
                 {!isMouseOver && <MailDate sentAt={mail.sentAt} isRead={isRead} />}
-                {isMouseOver && <MailActions onRemove={this.onRemove} />}
+                {isMouseOver && <MailActions onRemove={this.onRemove} isRead={isRead} onToggleRead={this.onToggleRead} />}
             </li>
         )
     }

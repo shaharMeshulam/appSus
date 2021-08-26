@@ -9,9 +9,26 @@
     border-top-right-radius: 25px;
     cursor: pointer;
     padding: 10px 0;
+    color: #202124;
+    text-decoration: none;
 }
 
 .mail-nav-item.active {
     background-color: #fce8e6;
     color: #d93025;
+}
+
+.mail-nav-item .material-icons-outlined {
+    margin-right: 15px;
+}
+
+.mail-nav-item-compose {
+    padding: 10px 15px; 
+    border: 1px solid;
+    border-radius: 50px;
+    transition: box-shadow .08s linear,min-width .15s cubic-bezier(0.4,0.0,0.2,1);
+}
+
+.mail-nav-item-compose:hover {
+    box-shadow: 1px 3px 0 rgb(60 64 67 / 30%), 0 4px 8px 3px rgb(60 64 67 / 15%)
 }

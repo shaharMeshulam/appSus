@@ -37,7 +37,7 @@ function getMailsToDisplay(type) {
         case 'trash':
             return Promise.resolve(gMails.filter(mail => mail.status.isInTrash));
         case 'draft':
-            return Promise.resolve(gMails.filter(mail => mail.status.isDraft));
+            return Promise.resolve(gMails.filter(mail => mail.status.isDraft && !mail.status.isInTrash));
     }
 }
 
@@ -56,6 +56,8 @@ function addMail(mail, id = utilService.makeId(), sentAt = Date.now()) { // ADD 
                 if (m) {
                     m = mail;
                     m.sentAt = sentAt;
+                    const idx = gMails.findIndex(ml => ml.id === mail.id);
+                    gMails[idx] = m;
                     storageService.saveToStorage(DB_KEY, gMails);
                     resolve();
                 } else {
@@ -74,17 +76,14 @@ function getEmailById(id) {
 }
 
 function remove(mailId) {
-    return getEmailById(mailId)
-        .then(mail => {
-            if (!mail) return;
-            const idx = gMails.findIndex(mail => mail.id === mailId);
-            if (mail.status.isInTrash) {
-                gMails.splice(idx, 1);
-            } else {
-                gMails[idx].status.isInTrash = true;
-            }
-            storageService.saveToStorage(DB_KEY, gMails);
-        });
+    const idx = gMails.findIndex(mail => mail.id === mailId);
+    if (gMails[idx].status.isInTrash) {
+        gMails.splice(idx, 1);
+    } else {
+        gMails[idx].status.isInTrash = true;
+    }
+    storageService.saveToStorage(DB_KEY, gMails);
+    return Promise.resolve();
 }
 
 function toggleStared(mailId) {
@@ -92,8 +91,8 @@ function toggleStared(mailId) {
         .then(mail => {
             mail.status.isStared = !mail.status.isStared;
             storageService.saveToStorage(DB_KEY, gMails);
+            return mail;
         });
-
 }
 
 function setMailIsRead(mailId, isRead) {
@@ -101,6 +100,7 @@ function setMailIsRead(mailId, isRead) {
         .then(mail => {
             mail.status.isRead = isRead;
             storageService.saveToStorage(DB_KEY, gMails);
+            return mail;
         });
 }
 

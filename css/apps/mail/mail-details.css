@@ -1,3 +1,7 @@
+.mail-details {
+    flex-grow: 1;
+}
+
 .mail-detail-body {
     white-space: pre-line;
 }

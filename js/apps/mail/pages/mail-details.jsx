@@ -1,5 +1,7 @@
 import { eventBusService } from "../../../services/event-bus-service.js";
+import { MailActions } from "../cmps/mail-actions.jsx";
 import { MailDate } from "../cmps/mail-date.jsx";
+import { MailStar } from "../cmps/mail-star.jsx";
 import { mailService } from "../services/mail.service.js";
 
 export class MailDetails extends React.Component {
@@ -15,9 +17,27 @@ export class MailDetails extends React.Component {
         const mailId = this.props.match.params.mailId;
         mailService.getEmailById(mailId)
             .then(mail => {
-                this.setState({ mail });
                 mailService.setMailIsRead(mail.id, true)
+                    .then(m => this.setState({ mail: m }))
             });
+    }
+
+    onRemove = () => {
+        mailService.remove(this.state.mail.id)
+            .then(() => {
+                this.props.history.push('/mail#inbox');
+            });
+    }
+
+    onToggleRead = () => {
+        const { mail } = this.state;
+        mailService.setMailIsRead(mail.id, !mail.status.isRead)
+            .then(m => this.setState({ mail: m }));
+    }
+
+    onStarToggle = () => {
+        mailService.toggleStared(this.state.mail.id)
+            .then((mail) => this.setState({ mail }));
     }
 
     render() {
@@ -27,7 +47,12 @@ export class MailDetails extends React.Component {
             <div className="mail-details">
                 <div className="mail-details-container flex direction-column">
                     <div className="flex justify-between">
-                        <p className="mail-details-from">{mail.from}</p><MailDate sentAt={mail.sentAt} isRead={true}/>
+                        <p className="mail-details-from">{mail.from}</p>
+                        <div className="actions flex">
+                            <MailStar isStared={mail.status.isStared} onStarToggle={this.onStarToggle}/>
+                            <MailActions onRemove={this.onRemove} isRead={mail.status.isRead} onToggleRead={this.onToggleRead} />
+                            <MailDate sentAt={mail.sentAt} isRead={true} />
+                        </div>
                     </div>
                     <pre className="mail-detail-body">
                         {mail.body}

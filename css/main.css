@@ -2,6 +2,7 @@
 @import url(./parts/base.css);
 @import url(./parts/fonts.css);
 @import url(./cmps/app-home.css);
+@import url(./cmps/app-nav.css);
 @import url(./cmps/user-msg.css);
 
 @import url(./apps/mail/mail-preview.css);
