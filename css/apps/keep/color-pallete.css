@@ -1,10 +1,16 @@
 .color-pallete {
     position: absolute;
     bottom: 30px;
+    background-color: rgb(109, 109, 109);
+    padding: 5px;
+    display: grid;
+    gap:5px 5px;
+    grid-template-columns: repeat(3, 20px);
+    grid-template-rows: repeat(3, 20px);
 }
 
 .color-pallete .color {
-    height: 25px;
-    width: 25px;
+    height: 20px;
+    width: 20px;
     border-radius: 50%;
 }

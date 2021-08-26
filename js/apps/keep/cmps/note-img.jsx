@@ -12,14 +12,15 @@ export class NoteImg extends React.Component {
     onMouseLeave = () => { this.setState({ showActions: false }) }
 
     render() {
-        const { note, onClick } = this.props
+        const { note, onClick, loadNotes } = this.props
 
         return (
-            <div className="note-img note clickable" onClick={onClick} onMouseEnter={this.onMouseEnter} onMouseLeave={this.onMouseLeave}>
+            <div style={{ backgroundColor: (note.style) ? note.style.backgroundColor : 'white' }} className="note-img note clickable" onClick={onClick} onMouseEnter={this.onMouseEnter} onMouseLeave={this.onMouseLeave}>
                 {note.info.url && <img src={note.info.url} />}
-                {note.title && <h1>{note.title}</h1>}
+                {note.info.title && <h1>{note.info.title}</h1>}
                 {note.info.txt && <h1>{note.info.txt}</h1>}
-                {this.state.showActions && <NoteAction />}
+                {this.state.showActions && <NoteAction note={note} loadNotes={loadNotes} />}
+                {!this.state.showActions && <div className="note-action-placeholder"></div>}
             </div >
         )
     }

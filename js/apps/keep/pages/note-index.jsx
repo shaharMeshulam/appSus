@@ -27,7 +27,7 @@ class _KeepApp extends React.Component {
         return (
             <React.Fragment>
                 <NoteAdd loadNotes={this.loadNotes} />
-                {notes && <NoteList notes={notes} onClick={this.onClick} />}
+                {notes && <NoteList loadNotes={this.loadNotes} notes={notes} onClick={this.onClick} />}
             </React.Fragment>
         )
     }
