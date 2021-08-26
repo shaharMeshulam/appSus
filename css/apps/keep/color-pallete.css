@@ -1,0 +1,10 @@
+.color-pallete {
+    position: absolute;
+    bottom: 30px;
+}
+
+.color-pallete .color {
+    height: 25px;
+    width: 25px;
+    border-radius: 50%;
+}
