@@ -1,18 +1,16 @@
-export function MailDate({ sentAt }) {
+export function MailDate({ sentAt, isRead }) {
     const formatDate = (sentAt) => {
-        const currDate = Date.now();
-        const day = 1000 * 60 * 60 * 24;
-        const yesterday = currDate - day;
-        const date = new Date(sentAt);
-        if (sentAt > yesterday) {
-            let hours = date.getHours();
+        const currDate = new Date();
+        const sentDate = new Date(sentAt);
+        if (currDate.getDate() === sentDate.getDate()) {
+            let hours = sentDate.getHours();
             if (hours < 10) hours = '0' + hours;
-            let mins = date.getMinutes();
+            let mins = sentDate.getMinutes();
             if (mins < 10) mins = '0' + mins;
             return `${hours}:${mins}`;
-        } else return date.toLocaleDateString('en-CA');
+        } else return sentDate.toLocaleDateString('en-GB');
     }
     return (
-        <span>{formatDate(sentAt)}</span>
+        <span className={isRead ? '' : 'bold'}>{formatDate(sentAt)}</span>
     )
 }

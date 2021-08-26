@@ -1,5 +1,5 @@
+import { eventBusService } from "../../../services/event-bus-service.js";
 import { MailDate } from "../cmps/mail-date.jsx";
-import { MailEditor } from "../cmps/mail-editor.jsx";
 import { mailService } from "../services/mail.service.js";
 
 export class MailDetails extends React.Component {
@@ -14,7 +14,10 @@ export class MailDetails extends React.Component {
     getMail = () => {
         const mailId = this.props.match.params.mailId;
         mailService.getEmailById(mailId)
-            .then(mail => this.setState({ mail }));
+            .then(mail => {
+                this.setState({ mail });
+                mailService.setMailIsRead(mail.id, true)
+            });
     }
 
     render() {
@@ -24,7 +27,7 @@ export class MailDetails extends React.Component {
             <div className="mail-details">
                 <div className="mail-details-container flex direction-column">
                     <div className="flex justify-between">
-                        <p className="mail-details-from">{mail.from}</p><MailDate sentAt={mail.sentAt} />
+                        <p className="mail-details-from">{mail.from}</p><MailDate sentAt={mail.sentAt} isRead={true}/>
                     </div>
                     <pre className="mail-detail-body">
                         {mail.body}

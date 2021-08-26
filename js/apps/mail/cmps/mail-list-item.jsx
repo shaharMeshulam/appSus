@@ -47,16 +47,17 @@ class _MailListItem extends React.Component {
             .then(() => eventBusService.emit('mail-change'));
     }
 
-    onEditMail = () => { 
+    onEditMail = () => {
         eventBusService.emit('mail-edit', this.props.mail.id);
     }
 
     render() {
         const { mail, type } = this.props;
-        const { isDraft } = mail.status;
+        const { isDraft, isRead } = mail.status;
         const { isChecked, isMouseOver } = this.state
+        console.log('isRead', isRead);
         return (
-            <li className={`mail-list-item ${mail.isRead ? 'mail-list-item-red' : ''} flex align-center`} onMouseOver={this.onMouseOver} onMouseLeave={this.onMouseLeave}>
+            <li className={`mail-list-item ${isRead && 'mail-list-item-read'} flex align-center`} onMouseOver={this.onMouseOver} onMouseLeave={this.onMouseLeave}>
                 {!mail.status.isStared && <span className="btn material-icons-outlined" onClick={() => this.onStarToggle(mail.id)}>
                     star_outline
                 </span>}
@@ -64,15 +65,15 @@ class _MailListItem extends React.Component {
                     star
                 </span>}
                 <input type="checkbox" name="check" id="check" checked={isChecked} onChange={this.onChange} />
-                {!isDraft && <Link to={`/mail/${mail.id}#${type}`} className={`flex mail-list-item-preview ${!mail.status.isRead && 'bold'}`}>
+                {!isDraft && <Link to={`/mail/${mail.id}#${type}`} className={`flex mail-list-item-preview ${!isRead && 'bold'}`}>
                     <span className="sender-name">{this.getSenderName()}</span>
-                    <MailPreview subject={mail.subject} body={mail.body} isRead={mail.status.isRead} sentAt={mail.sentAt} />
+                    <MailPreview subject={mail.subject} body={mail.body} isRead={isRead} sentAt={mail.sentAt} />
                 </Link>}
                 {isDraft && <div className={'flex mail-list-item-preview'} onClick={this.onEditMail}>
                     <span className="sender-name">{this.getSenderName()}</span>
-                    <MailPreview subject={mail.subject} body={mail.body} isRead={mail.status.isRead} sentAt={mail.sentAt} />
+                    <MailPreview subject={mail.subject} body={mail.body} isRead={isRead} sentAt={mail.sentAt} />
                 </div>}
-                {!isMouseOver && <MailDate sentAt={mail.sentAt} />}
+                {!isMouseOver && <MailDate sentAt={mail.sentAt} isRead={isRead} />}
                 {isMouseOver && <MailActions onRemove={this.onRemove} />}
             </li>
         )

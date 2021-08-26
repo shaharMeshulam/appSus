@@ -31,9 +31,11 @@ export class MailEditor extends React.Component {
             const mail = this.state.mail;
             mail.status = {};
             mail.status.isDraft = true;
-            mailService.addMail(mail).then(() => eventBusService.emit('email-change'));
+            mail.status.isRead = true;
+            mail.status.isInTrash = false;
+            mailService.addMail(mail).then(() => eventBusService.emit('mail-change'));
         } else {
-            mailService.remove(id).then(() => eventBusService.emit('email-change'));
+            mailService.remove(id).then(() => eventBusService.emit('mail-change'));
         }
     }
 
@@ -52,7 +54,7 @@ export class MailEditor extends React.Component {
         const newMail = this.state.mail;
         newMail.status = {};
         newMail.status.isSent = true;
-        newMail.status.isRead = false;
+        newMail.status.isRead = true;
         newMail.status.isDraft = false;
         newMail.status.isStared = false;
         newMail.status.isInTrash = false;
@@ -60,7 +62,7 @@ export class MailEditor extends React.Component {
         mailService.addMail(newMail).then(() => {
             if (this.props.onMailSent) {
                 this.props.onMailSent();
-                eventBusService.emit('email-change');
+                eventBusService.emit('mail-change');
             }
         })
     }
