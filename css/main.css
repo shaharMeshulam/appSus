@@ -3,6 +3,7 @@
 @import url(./parts/fonts.css);
 @import url(./cmps/app-home.css);
 @import url(./cmps/app-nav.css);
+@import url(./cmps/app-search.css);
 @import url(./cmps/user-msg.css);
 
 @import url(./apps/mail/mail-preview.css);
@@ -12,7 +13,7 @@
 @import url(./apps/mail/floating-mail-editor.css);
 @import url(./apps/mail/mail-editor.css);
 @import url(./apps/mail/wall.css);
-
+@import url(./apps/mail/mail-labels.css);
 
 @import url(./apps/keep/note-preview.css);
 @import url(./apps/keep/note-list.css);

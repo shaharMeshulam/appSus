@@ -1,0 +1,12 @@
+.app-search [for=search] {
+    border: 1px solid black;
+    padding: 0;
+}
+
+.app-search [for=search] [name=search] {
+    border: 0;
+    padding-inline-start: 10px;
+}
+.app-search [for=search] [name=search]:focus {
+    outline: 0;
+}

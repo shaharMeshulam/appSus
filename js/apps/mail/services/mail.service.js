@@ -2,6 +2,12 @@ import { storageService } from '../../../services/storage.service.js';
 import { utilService } from '../../../services/util.service.js';
 const DB_KEY = 'mailDb';
 const TYPES = ['inbox', 'sent', 'stared', 'trash', 'draft'];
+const LABELS = [
+    { value: 'Important', color: '#f89f94' },
+    { value: 'Social', color: '#ffc7a2' },
+    { value: 'Friends', color: '#c4e6d5' },
+    { value: 'Family', color: '#bfcdde' }
+];
 const USER = {
     name: 'Shahar Meshulam',
     mail: 'shahar.mesh@gmail.com'
@@ -12,11 +18,14 @@ export const mailService = {
     getMailsToDisplay,
     addMail,
     getTypes,
-    getEmailById,
+    getMailById,
     getUser,
     remove,
     toggleStared,
-    setMailIsRead
+    setMailIsRead,
+    getLabels,
+    getMailLabels,
+    addLabel
 };
 
 init();
@@ -49,9 +58,27 @@ function getUser() {
     return USER;
 }
 
+function getLabels() {
+    return Promise.resolve(LABELS);
+}
+
+function getMailLabels(mailId) {
+    return getMailById(mailId)
+        .then(mail => mail.labels);
+}
+
+function addLabel(mailId, label) {
+    return getMailById(mailId)
+        .then(mail => {
+            if (mail.labels.find(lbl => lbl.color === label.color)) return;
+            mail.labels.push(label);
+            storageService.saveToStorage(DB_KEY, gMails);
+        })
+}
+
 function addMail(mail, id = utilService.makeId(), sentAt = Date.now()) { // ADD STATUS - draft -sent -inbox
     return new Promise((resolve, reject) => {
-        getEmailById(mail.id)
+        getMailById(mail.id)
             .then(m => {
                 if (m) {
                     m = mail;
@@ -71,7 +98,7 @@ function addMail(mail, id = utilService.makeId(), sentAt = Date.now()) { // ADD 
     })
 }
 
-function getEmailById(id) {
+function getMailById(id) {
     return Promise.resolve(gMails.find(mail => mail.id === id));
 }
 
@@ -87,7 +114,7 @@ function remove(mailId) {
 }
 
 function toggleStared(mailId) {
-    return this.getEmailById(mailId)
+    return this.getMailById(mailId)
         .then(mail => {
             mail.status.isStared = !mail.status.isStared;
             storageService.saveToStorage(DB_KEY, gMails);
@@ -96,7 +123,7 @@ function toggleStared(mailId) {
 }
 
 function setMailIsRead(mailId, isRead) {
-    return this.getEmailById(mailId)
+    return this.getMailById(mailId)
         .then(mail => {
             mail.status.isRead = isRead;
             storageService.saveToStorage(DB_KEY, gMails);
@@ -126,7 +153,8 @@ function _createMails() {
             isDraft: false,
             isStared: false,
             isInTrash: false,
-        }
+        },
+        labels: []
     };
     addMail(mail);
     mail = {
@@ -165,7 +193,8 @@ function _createMails() {
             isDraft: false,
             isStared: false,
             isInTrash: false
-        }
+        },
+        labels: []
     };
     addMail(mail);
     mail = {
@@ -229,7 +258,8 @@ function _createMails() {
             isDraft: false,
             isStared: false,
             isInTrash: false
-        }
+        },
+        labels: []
     };
     addMail(mail);
     mail = {
@@ -303,7 +333,8 @@ function _createMails() {
             isDraft: false,
             isStared: false,
             isInTrash: false
-        }
+        },
+        labels: []
     };
     addMail(mail, utilService.makeId(), '2021-08-25T10:53:38+00:00');
     mail = {
@@ -338,7 +369,8 @@ You are receiving this email because a Reddit account, shahar-mesh, is registere
             isDraft: false,
             isStared: false,
             isInTrash: false
-        }
+        },
+        labels: []
     };
     addMail(mail, utilService.makeId(), '2021-08-24T04:53:38+00:00');
     mail = {
@@ -386,7 +418,8 @@ You are receiving this email because a Reddit account, shahar-mesh, is registere
             isDraft: false,
             isStared: false,
             isInTrash: false
-        }
+        },
+        labels: []
     };
     addMail(mail, utilService.makeId(), '2021-08-24T04:53:38+00:00');
     mail = {
@@ -439,7 +472,8 @@ You are receiving this email because a Reddit account, shahar-mesh, is registere
             isDraft: false,
             isStared: false,
             isInTrash: false
-        }
+        },
+        labels: []
     };
     addMail(mail, utilService.makeId(), '2021-08-23T15:53:38+00:00');
     // SENT
@@ -504,7 +538,8 @@ You are receiving this email because a Reddit account, shahar-mesh, is registere
             isDraft: false,
             isStared: false,
             isInTrash: false
-        }
+        },
+        labels: []
     };
     addMail(mail);
     mail = {
@@ -570,7 +605,8 @@ You are receiving this email because a Reddit account, shahar-mesh, is registere
             isDraft: false,
             isStared: false,
             isInTrash: false
-        }
+        },
+        labels: []
     };
     addMail(mail);
     mail = {
@@ -616,7 +652,8 @@ You are receiving this email because a Reddit account, shahar-mesh, is registere
             isDraft: false,
             isStared: false,
             isInTrash: false
-        }
+        },
+        labels: []
     };
     addMail(mail)
 

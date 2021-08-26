@@ -25,7 +25,7 @@ export class DashBoard extends React.Component {
     }
 
     onEdit = (mailId) => {
-        mailService.getEmailById(mailId)
+        mailService.getMailById(mailId)
             .then(mail => this.setState({ isEditNewMail: true, mail }));
     }
 

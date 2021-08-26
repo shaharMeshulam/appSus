@@ -61,8 +61,7 @@ class _MailListItem extends React.Component {
     render() {
         const { mail, type } = this.props;
         const { isDraft, isRead, isStared } = mail.status;
-        const { isChecked, isMouseOver } = this.state
-        console.log('isRead', isRead);
+        const { isChecked, isMouseOver } = this.state;
         return (
             <li className={`mail-list-item ${isRead && 'mail-list-item-read'} flex align-center`} onMouseOver={this.onMouseOver} onMouseLeave={this.onMouseLeave}>
                 <input type="checkbox" name="check" id="check" checked={isChecked} onChange={this.onChange} />
@@ -76,7 +75,7 @@ class _MailListItem extends React.Component {
                     <MailPreview subject={mail.subject} body={mail.body} isRead={isRead} sentAt={mail.sentAt} />
                 </div>}
                 {!isMouseOver && <MailDate sentAt={mail.sentAt} isRead={isRead} />}
-                {isMouseOver && <MailActions onRemove={this.onRemove} isRead={isRead} onToggleRead={this.onToggleRead} />}
+                {isMouseOver && <MailActions mailId={mail.id} onRemove={this.onRemove} isRead={isRead} onToggleRead={this.onToggleRead} />}
             </li>
         )
     }
