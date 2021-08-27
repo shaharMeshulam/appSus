@@ -40,6 +40,7 @@ function getMailsToDisplay(criteria) {
     const status = criteria.status || null;
     const isStared = criteria.isStared || null
     const txt = criteria.txt || null;
+    const isRead = (!criteria.isRead) ? null : criteria.isRead === 'true' ? true : false;
     // const txt = gCriteria.txt;
     // const isRead = gCriteria.isRead;
     // const isStared = gCriteria.isStared;
@@ -47,7 +48,8 @@ function getMailsToDisplay(criteria) {
     return Promise.resolve(gMails.filter(mail =>
         _filterByStatus(mail, status) &&
         _filterByIsStared(mail, isStared) &&
-        _filterByTxt(mail, txt)
+        _filterByTxt(mail, txt) &&
+        _fliterByIsRead(mail, isRead)
     ));
 }
 
@@ -67,6 +69,12 @@ function _filterByTxt(mail, txt) {
     if (mail.body.includes(txt)) return true;
     if (mail.to.includes(txt)) return true;
     if (mail.from.includes(txt)) return true;
+    return false;
+}
+
+function _fliterByIsRead(mail, isRead) {
+    if (isRead === null) return true;
+    if (isRead === mail.isRead) return true;
     return false;
 }
 

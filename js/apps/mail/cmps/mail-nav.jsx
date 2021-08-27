@@ -72,7 +72,7 @@ export function MailNav({ onEditNewMail }) {
                 to="/mail#all"
                 onClick={() => { setSearch({ status: 'all' }) }}
                 isActive={() => getIsActive('#all')}>
-                <span class="material-icons-outlined">
+                <span className="material-icons-outlined">
                     mark_as_unread
                 </span>
                 <span>All</span>
