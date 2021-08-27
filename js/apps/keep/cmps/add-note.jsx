@@ -57,9 +57,8 @@ export class NoteAdd extends React.Component {
             case 'note-vid':
             case 'note-img':
                 return 'url'
-            case 'note-todos':
-                return 'todos'
         }
+        return 'todos'
     }
 
     render() {
@@ -70,20 +69,18 @@ export class NoteAdd extends React.Component {
                 <input onChange={this.handleChange} value={title} name="title" type="text" placeholder="title" />
                 <input onChange={this.handleChange} value={this.state.info[this.getName]} name={this.getName} type="text" placeholder={this.getPlaceholder} />
                 <button onClick={this.onAddNote}>Add Note</button>
+
                 <div className="note-type">
-                    <span onClick={(ev) => {
-                        ev.preventDefault()
-                        this.onSetNoteType('note-vid')
-                    }} className="clickable material-icons-outlined">
+                    <span onClick={() => { this.onSetNoteType('note-vid') }} className="clickable material-icons-outlined">
                         movie
                     </span>
-                    <span onClick={(ev) => { this.onSetNoteType('note-img') }} className="clickable material-icons-outlined">
+                    <span onClick={() => { this.onSetNoteType('note-img') }} className="clickable material-icons-outlined">
                         image
                     </span>
-                    <span onClick={(ev) => { this.onSetNoteType('note-todos') }} className="clickable material-icons-outlined">
+                    <span onClick={() => { this.onSetNoteType('note-todos') }} className="clickable material-icons-outlined">
                         format_list_bulleted
                     </span>
-                    <span onClick={(ev) => { this.onSetNoteType('note-txt') }} className="clickable material-icons-outlined">
+                    <span onClick={() => { this.onSetNoteType('note-txt') }} className="clickable material-icons-outlined">
                         format_color_text
                     </span>
                 </div>

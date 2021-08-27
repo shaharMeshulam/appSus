@@ -36,9 +36,14 @@ export class NoteAction extends React.Component {
         loadNotes()
     }
 
+    onDuplicateNote = () => {
+        const { note, loadNotes } = this.props
+        noteService.duplicateNote(note)
+        loadNotes()
+    }
+
     render() {
         const { showPallete, note } = this.state
-        const { editModeToggle } = this.props
 
         if (!note) return <React.Fragment></React.Fragment>
         return (
@@ -53,8 +58,11 @@ export class NoteAction extends React.Component {
                 <span onClick={this.onDeleteBook} className="material-icons-outlined">
                     delete
                 </span>
-                <span onClick={editModeToggle} className="material-icons">
+                <span className="material-icons">
                     edit
+                </span>
+                <span onClick={this.onDuplicateNote} className="material-icons-outlined">
+                    content_copy
                 </span>
 
             </section>

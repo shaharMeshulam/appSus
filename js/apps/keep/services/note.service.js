@@ -7,7 +7,8 @@ export const noteService = {
     getNoteById,
     setColor,
     updateNote,
-    togglePin
+    togglePin,
+    duplicateNote
 }
 
 import { utilService } from "../../../services/util.service.js";
@@ -54,19 +55,21 @@ function setColor(note, color) {
     _saveNotes()
 }
 
-function updateNote(noteId, title, content, field) {
+function updateNote(noteId, content, field) {
     getNoteById(noteId).then(
         note => {
-            note.info.title = title
-            note.info[field] = content
+            note.info[field] = content || ''
             _saveNotes()
         }
     )
 
 }
 
-function setNotes() {
-
+function duplicateNote(note) {
+    const newNote = JSON.parse(JSON.stringify(note))
+    newNote.id = utilService.makeId(8)
+    gNotes.push(newNote)
+    _saveNotes()
 }
 
 function _saveNotes() {
