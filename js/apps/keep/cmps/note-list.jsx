@@ -1,25 +1,26 @@
-import { NoteTxt } from './note-txt.jsx'
-import { NoteImg } from './note-img.jsx'
-import { NoteVid } from './note-vid.jsx'
-import { NoteTodos } from './note-todos.jsx'
 
-const { Link } = ReactRouterDOM
+import { DinamicNote } from './dinamic-note.jsx'
 
-export function NoteList({ notes, onClick, loadNotes }) {
+
+export function NoteList({ notes, loadNotes }) {
     return (
         <section className="notes-list">
-            {notes.map(note => {
-                switch (note.type) {
-                    case 'note-txt':
-                        return <NoteTxt loadNotes={loadNotes} key={note.id} note={note} onClick={() => { onClick(`/keep/${note.id}`) }} />
-                    case 'note-img':
-                        return <NoteImg loadNotes={loadNotes} key={note.id} note={note} onClick={() => { onClick(`/keep/${note.id}`) }} />
-                    case 'note-vid':
-                        return <NoteVid loadNotes={loadNotes} key={note.id} note={note} onClick={() => { onClick(`/keep/${note.id}`) }} />
-                    case 'note-todos':
-                        return <NoteTodos loadNotes={loadNotes} key={note.id} note={note} onClick={() => { onClick(`/keep/${note.id}`) }} />
-                }
-            })}
+            <div className="pinned-notes">
+                {notes.map(note => {
+                    if (note.isPinned) {
+                        return <DinamicNote key={note.id} note={note} loadNotes={loadNotes} />
+                    }
+                })}
+            </div>
+            <div className="unpinned-notes">
+                {notes.map(note => {
+                    if (!note.isPinned) {
+                        return <DinamicNote key={note.id} note={note} loadNotes={loadNotes} />
+                    }
+                })}
+            </div>
+
+
         </section>
     )
 }

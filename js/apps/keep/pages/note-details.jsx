@@ -56,7 +56,19 @@ export class NoteDetails extends React.Component {
                 <section className="note-details">
                     {<textarea onChange={this.handleChange} name="title" value={title}></textarea>}
                     {!note.info.todos && content && <textarea name="content" onChange={this.handleChange} value={content}></textarea>}
-                    {note.info.todos && content.map((todo, idx) => <textarea data-idx={idx} onChange={this.handleTodoChange} value={todo.txt} key={`${note.key}${idx}`}></textarea>)}
+                    {note.info.todos && content.map((todo, idx) => {
+                        return (<React.Fragment>
+                            <textarea data-idx={idx} onChange={this.handleTodoChange} value={todo.txt} key={`${note.key}${idx}`}></textarea>
+                            <span onClick={()=>{this.removeNote(idx)}} className="material-icons">
+                                remove_circle
+                            </span>
+                            <span className="material-icons">
+                                add_circle
+                            </span>
+                        </React.Fragment>
+                        )
+                    })}
+
                     <button onClick={this.onSave}>Save</button>
                 </section>
             </div>
