@@ -17,4 +17,5 @@
 .mail-edit-body {
     margin: 0;
     flex-grow: 1;
+    white-space: break-spaces
 }

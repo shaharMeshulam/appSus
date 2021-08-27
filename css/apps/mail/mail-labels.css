@@ -1,0 +1,12 @@
+.mail-labels {
+    position: relative;
+}
+
+.mail-labels-labels {
+    position: absolute;
+    right: 0;
+}
+
+.mail-labels-labels li {
+    padding: 10px;
+}

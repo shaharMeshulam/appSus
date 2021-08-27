@@ -1,22 +1,14 @@
+import { AppNav } from "./app-nav.jsx";
 import { AppSearch } from "./app-search.jsx";
 
 const { NavLink, withRouter } = ReactRouterDOM
 
 function _AppHeader() {
   return (
-    <header className="app-header">
+    <header className="app-header flex justify-between">
       <h2><NavLink to="/">AppSus</NavLink></h2>
-      <nav>
-        <NavLink to="/">Home</NavLink>
-        <NavLink to="/mail#inbox" >Mail</NavLink>
-        <NavLink to="/keep" >Notes</NavLink>
-        <NavLink to="/book" >Books</NavLink>
-        <NavLink to="/about" >About</NavLink>
-      </nav>
       <AppSearch />
-      <span className="material-icons-outlined">
-        apps
-      </span>
+      <AppNav/>
     </header>
   )
 }

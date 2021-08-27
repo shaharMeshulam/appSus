@@ -1,0 +1,20 @@
+.app-search [for=search] {
+    border: 1px solid black;
+    padding: 0;
+    position: relative;
+}
+
+.app-search [for=search] [name=txt] {
+    border: 0;
+    padding-inline-start: 10px;
+}
+.app-search [for=search] [name=txt]:focus {
+    outline: 0;
+}
+
+.app-search-criteria {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    transform: translate(-50%, 100%);
+}
