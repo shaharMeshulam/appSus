@@ -31,7 +31,7 @@ export class MailDetails extends React.Component {
 
     onToggleRead = () => {
         const { mail } = this.state;
-        mailService.setMailIsRead(mail.id, !mail.status.isRead)
+        mailService.setMailIsRead(mail.id, !mail.isRead)
             .then(m => this.setState({ mail: m }));
     }
 
@@ -49,8 +49,8 @@ export class MailDetails extends React.Component {
                     <div className="flex justify-between">
                         <p className="mail-details-from">{mail.from}</p>
                         <div className="actions flex">
-                            <MailStar isStared={mail.status.isStared} onStarToggle={this.onStarToggle} />
-                            <MailActions mailId={mail.id} onRemove={this.onRemove} isRead={mail.status.isRead} onToggleRead={this.onToggleRead} />
+                            <MailStar isStared={mail.isStared} onStarToggle={this.onStarToggle} />
+                            <MailActions mailId={mail.id} onRemove={this.onRemove} isRead={mail.isRead} onToggleRead={this.onToggleRead} />
                             <MailDate sentAt={mail.sentAt} isRead={true} />
                         </div>
                     </div>

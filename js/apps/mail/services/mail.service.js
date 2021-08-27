@@ -1,7 +1,7 @@
 import { storageService } from '../../../services/storage.service.js';
 import { utilService } from '../../../services/util.service.js';
 const DB_KEY = 'mailDb';
-const TYPES = ['inbox', 'sent', 'stared', 'trash', 'draft'];
+const TYPES = ['inbox', 'sent', 'stared', 'trash', 'draft', 'all'];
 const LABELS = [
     { value: 'Important', color: '#f89f94' },
     { value: 'Social', color: '#ffc7a2' },
@@ -25,7 +25,7 @@ export const mailService = {
     setMailIsRead,
     getLabels,
     getMailLabels,
-    addLabel
+    addLabel,
 };
 
 init();
@@ -35,19 +35,39 @@ function init() {
     if (!gMails) _createMails();
 }
 
-function getMailsToDisplay(type) {
-    switch (type) {
-        case 'inbox':
-            return Promise.resolve(gMails.filter(mail => mail.status.isInbox === true && !mail.status.isInTrash));
-        case 'sent':
-            return Promise.resolve(gMails.filter(mail => mail.status.isSent === true && !mail.status.isInTrash));
-        case 'stared':
-            return Promise.resolve(gMails.filter(mail => mail.status.isStared));
-        case 'trash':
-            return Promise.resolve(gMails.filter(mail => mail.status.isInTrash));
-        case 'draft':
-            return Promise.resolve(gMails.filter(mail => mail.status.isDraft && !mail.status.isInTrash));
-    }
+function getMailsToDisplay(criteria) {
+    console.log('criteria:', criteria)
+    const status = criteria.status || null;
+    const isStared = criteria.isStared || null
+    const txt = criteria.txt || null;
+    // const txt = gCriteria.txt;
+    // const isRead = gCriteria.isRead;
+    // const isStared = gCriteria.isStared;
+    // const isInTrash = gCriteria.isInTrash
+    return Promise.resolve(gMails.filter(mail =>
+        _filterByStatus(mail, status) &&
+        _filterByIsStared(mail, isStared) &&
+        _filterByTxt(mail, txt)
+    ));
+}
+
+function _filterByStatus(mail, status) {
+    if (!status || status === 'all') return true;
+    return mail.status === status;
+}
+
+function _filterByIsStared(mail, isStared) {
+    if (!isStared) return true;
+    return mail.isStared === isStared;
+}
+
+function _filterByTxt(mail, txt) {
+    if (!txt) return true;
+    if (mail.subject.includes(txt)) return true;
+    if (mail.body.includes(txt)) return true;
+    if (mail.to.includes(txt)) return true;
+    if (mail.from.includes(txt)) return true;
+    return false;
 }
 
 function getTypes() {
@@ -76,7 +96,7 @@ function addLabel(mailId, label) {
         })
 }
 
-function addMail(mail, id = utilService.makeId(), sentAt = Date.now()) { // ADD STATUS - draft -sent -inbox
+function addMail(mail, id = utilService.makeId(), sentAt = Date.now()) { // TODO CHECK!
     return new Promise((resolve, reject) => {
         getMailById(mail.id)
             .then(m => {
@@ -103,20 +123,18 @@ function getMailById(id) {
 }
 
 function remove(mailId) {
-    const idx = gMails.findIndex(mail => mail.id === mailId);
-    if (gMails[idx].status.isInTrash) {
-        gMails.splice(idx, 1);
-    } else {
-        gMails[idx].status.isInTrash = true;
-    }
-    storageService.saveToStorage(DB_KEY, gMails);
-    return Promise.resolve();
+    return getMailById(mailId)
+        .then(mail => {
+            if (mail.status === 'trash') gMails.splice(gMails.findIndex(m => m.id === mailId), 1);
+            else mail.status = 'trash';
+            storageService.saveToStorage(DB_KEY, gMails);
+        })
 }
 
 function toggleStared(mailId) {
     return this.getMailById(mailId)
         .then(mail => {
-            mail.status.isStared = !mail.status.isStared;
+            mail.isStared = !mail.isStared;
             storageService.saveToStorage(DB_KEY, gMails);
             return mail;
         });
@@ -125,7 +143,7 @@ function toggleStared(mailId) {
 function setMailIsRead(mailId, isRead) {
     return this.getMailById(mailId)
         .then(mail => {
-            mail.status.isRead = isRead;
+            mail.isRead = isRead;
             storageService.saveToStorage(DB_KEY, gMails);
             return mail;
         });
@@ -146,14 +164,9 @@ function _createMails() {
         View invitation
         Note: This invitation was intended for shahar.mesh@gmail.com. If you were not expecting this invitation, you can ignore this email. If @oripilpel is sending you too many emails, you can block them or report abuse.`,
         from: 'noreply@github.com‏',
-        status: {
-            isInbox: true,
-            isSent: false,
-            isRead: false,
-            isDraft: false,
-            isStared: false,
-            isInTrash: false,
-        },
+        isRead: false,
+        isStared: false,
+        status: 'inbox',
         labels: []
     };
     addMail(mail);
@@ -186,14 +199,9 @@ function _createMails() {
          
         בנק לאומי, יהודה הלוי 35 תל אביב, מיקוד 6513657 | יצירת קשר: מרכז בנקאות (לאומי callי) 5522*`,
         from: 'info@digital.leumi.co.il‏‏',
-        status: {
-            isInbox: true,
-            isSent: false,
-            isRead: false,
-            isDraft: false,
-            isStared: false,
-            isInTrash: false
-        },
+        isRead: false,
+        isStared: false,
+        status: 'inbox',
         labels: []
     };
     addMail(mail);
@@ -251,14 +259,9 @@ function _createMails() {
         You’re receiving this email because you are subscribed to The Overflow Newsletter from Stack Overflow.
         Unsubscribe from emails like this     Edit email settings     Contact us     Privacy`,
         from: 'do-not-reply@stackoverflow.email‏‏',
-        status: {
-            isInbox: true,
-            isSent: false,
-            isRead: false,
-            isDraft: false,
-            isStared: false,
-            isInTrash: false
-        },
+        isRead: false,
+        isStared: false,
+        status: 'inbox',
         labels: []
     };
     addMail(mail);
@@ -326,14 +329,9 @@ function _createMails() {
         30 day returns. Buyer pays for return shipping |  See details
         `,
         from: 'ebay@reply5.ebay.com‏',
-        status: {
-            isInbox: true,
-            isSent: false,
-            isRead: false,
-            isDraft: false,
-            isStared: false,
-            isInTrash: false
-        },
+        isRead: false,
+        isStared: false,
+        status: 'inbox',
         labels: []
     };
     addMail(mail, utilService.makeId(), '2021-08-25T10:53:38+00:00');
@@ -362,14 +360,9 @@ If you have questions, please visit Reddit Help.
 You are receiving this email because a Reddit account, shahar-mesh, is registered to this email address.
 548 Market St., #16093, San Francisco, CA 94104–5401`,
         from: 'noreply@redditmail.com‏',
-        status: {
-            isInbox: true,
-            isSent: false,
-            isRead: false,
-            isDraft: false,
-            isStared: false,
-            isInTrash: false
-        },
+        isRead: false,
+        isStared: false,
+        status: 'inbox',
         labels: []
     };
     addMail(mail, utilService.makeId(), '2021-08-24T04:53:38+00:00');
@@ -411,14 +404,9 @@ You are receiving this email because a Reddit account, shahar-mesh, is registere
         If you don't want to receive this type of email in the future, please unsubscribe.
         https://www.quora.com`,
         from: 'english-digest-noreply@quora.com‏‏',
-        status: {
-            isInbox: true,
-            isSent: false,
-            isRead: false,
-            isDraft: false,
-            isStared: false,
-            isInTrash: false
-        },
+        isRead: false,
+        isStared: false,
+        status: 'inbox',
         labels: []
     };
     addMail(mail, utilService.makeId(), '2021-08-24T04:53:38+00:00');
@@ -465,14 +453,9 @@ You are receiving this email because a Reddit account, shahar-mesh, is registere
         Did someone forward this email to you? Become a subscriber!
         Don't want future emails? Unsubscribe`,
         from: 'members@digitalmarketer.com‏‏',
-        status: {
-            isInbox: true,
-            isSent: false,
-            isRead: false,
-            isDraft: false,
-            isStared: false,
-            isInTrash: false
-        },
+        isRead: false,
+        isStared: false,
+        status: 'inbox',
         labels: []
     };
     addMail(mail, utilService.makeId(), '2021-08-23T15:53:38+00:00');
@@ -531,14 +514,9 @@ You are receiving this email because a Reddit account, shahar-mesh, is registere
         You’re receiving this email because you are subscribed to The Overflow Newsletter from Stack Overflow.
         Unsubscribe from emails like this     Edit email settings     Contact us     Privacy`,
         from: USER.mail,
-        status: {
-            isInbox: false,
-            isSent: true,
-            isRead: false,
-            isDraft: false,
-            isStared: false,
-            isInTrash: false
-        },
+        isRead: true,
+        isStared: false,
+        status: 'sent',
         labels: []
     };
     addMail(mail);
@@ -598,14 +576,9 @@ You are receiving this email because a Reddit account, shahar-mesh, is registere
         Did someone forward this email to you? Become a subscriber!
         Don't want future emails? Unsubscribe`,
         from: USER.mail,
-        status: {
-            isInbox: false,
-            isSent: true,
-            isRead: false,
-            isDraft: false,
-            isStared: false,
-            isInTrash: false
-        },
+        isRead: true,
+        isStared: false,
+        status: 'sent',
         labels: []
     };
     addMail(mail);
@@ -645,14 +618,9 @@ You are receiving this email because a Reddit account, shahar-mesh, is registere
         Did someone forward this email to you? Become a subscriber!
         Don't want future emails? Unsubscribe`,
         from: USER.mail,
-        status: {
-            isInbox: false,
-            isSent: true,
-            isRead: false,
-            isDraft: false,
-            isStared: false,
-            isInTrash: false
-        },
+        isRead: true,
+        isStared: false,
+        status: 'sent',
         labels: []
     };
     addMail(mail)

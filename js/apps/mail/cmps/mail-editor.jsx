@@ -29,10 +29,9 @@ export class MailEditor extends React.Component {
         const { id, to, subject, body } = this.state.mail;
         if (to || subject || body) {
             const mail = this.state.mail;
-            mail.status = {};
-            mail.status.isDraft = true;
-            mail.status.isRead = true;
-            mail.status.isInTrash = false;
+            mail.status = 'sent';
+            mail.isDraft = true;
+            mail.isRead = true;
             mailService.addMail(mail).then(() => eventBusService.emit('mail-change'));
         } else {
             mailService.remove(id).then(() => eventBusService.emit('mail-change'));
@@ -52,13 +51,10 @@ export class MailEditor extends React.Component {
     onSendMail = (ev) => {
         ev.preventDefault();
         const newMail = this.state.mail;
-        newMail.status = {};
-        newMail.status.isSent = true;
-        newMail.status.isRead = true;
-        newMail.status.isDraft = false;
-        newMail.status.isStared = false;
-        newMail.status.isInTrash = false;
-        newMail.status.isInbox = (newMail.to === mailService.getUser().mail) ? true : false;
+        newMail.status = 'sent';
+        newMail.isRead = true;
+        newMail.isDraft = false;
+        newMail.isStared = false;
         mailService.addMail(newMail).then(() => {
             if (this.props.onMailSent) {
                 this.props.onMailSent();

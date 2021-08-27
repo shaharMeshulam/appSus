@@ -54,27 +54,27 @@ class _MailListItem extends React.Component {
 
     onToggleRead = () => {
         const { mail } = this.props;
-        mailService.setMailIsRead(mail.id, !mail.status.isRead)
+        mailService.setMailIsRead(mail.id, !mail.isRead)
             .then(() => eventBusService.emit('mail-change'));
     }
 
     render() {
         const { mail, type } = this.props;
-        const { isDraft, isRead, isStared } = mail.status;
+        const { status, isRead, isStared, subject, body, sentAt } = mail;
         const { isChecked, isMouseOver } = this.state;
         return (
             <li className={`mail-list-item ${isRead && 'mail-list-item-read'} flex align-center`} onMouseOver={this.onMouseOver} onMouseLeave={this.onMouseLeave}>
                 <input type="checkbox" name="check" id="check" checked={isChecked} onChange={this.onChange} />
                 <MailStar isStared={isStared} onStarToggle={this.onStarToggle} />
-                {!isDraft && <Link to={`/mail/${mail.id}#${type}`} className={`flex mail-list-item-preview ${!isRead && 'bold'}`}>
+                {status !== 'draft' && <Link to={`/mail/${mail.id}#${type}`} className={`flex mail-list-item-preview ${!isRead && 'bold'}`}>
                     <span className="sender-name">{this.getSenderName()}</span>
-                    <MailPreview subject={mail.subject} body={mail.body} isRead={isRead} sentAt={mail.sentAt} />
+                    <MailPreview subject={subject} body={body} isRead={isRead} sentAt={sentAt} />
                 </Link>}
-                {isDraft && <div className={'flex mail-list-item-preview'} onClick={this.onEditMail}>
+                {status === 'draft' && <div className={'flex mail-list-item-preview'} onClick={this.onEditMail}>
                     <span className="sender-name">{this.getSenderName()}</span>
-                    <MailPreview subject={mail.subject} body={mail.body} isRead={isRead} sentAt={mail.sentAt} />
+                    <MailPreview subject={subject} body={body} isRead={isRead} sentAt={sentAt} />
                 </div>}
-                {!isMouseOver && <MailDate sentAt={mail.sentAt} isRead={isRead} />}
+                {!isMouseOver && <MailDate sentAt={sentAt} isRead={isRead} />}
                 {isMouseOver && <MailActions mailId={mail.id} onRemove={this.onRemove} isRead={isRead} onToggleRead={this.onToggleRead} />}
             </li>
         )
