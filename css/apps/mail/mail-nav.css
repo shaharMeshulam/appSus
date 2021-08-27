@@ -18,6 +18,10 @@
     color: #d93025;
 }
 
+.mail-nav-item:hover:not(.active)  {
+    background-color: #f1f3f4;
+}
+
 .mail-nav-item .material-icons-outlined {
     margin-right: 15px;
 }
