@@ -7,7 +7,7 @@ export class MailEditor extends React.Component {
         mail: {
             id: utilService.makeId(),
             from: mailService.getUser().mail,
-            to: '',
+            to: this.props.to || '',
             subject: '',
             body: ''
         }
@@ -29,9 +29,9 @@ export class MailEditor extends React.Component {
         const { id, to, subject, body } = this.state.mail;
         if (to || subject || body) {
             const mail = this.state.mail;
-            mail.status = 'sent';
-            mail.isDraft = true;
+            mail.status = 'draft';
             mail.isRead = true;
+            mail.labels = [];
             mailService.addMail(mail).then(() => eventBusService.emit('mail-change'));
         } else {
             mailService.remove(id).then(() => eventBusService.emit('mail-change'));
@@ -53,18 +53,18 @@ export class MailEditor extends React.Component {
         const newMail = this.state.mail;
         newMail.status = 'sent';
         newMail.isRead = true;
-        newMail.isDraft = false;
         newMail.isStared = false;
+        if(!newMail.labels) newMail.labels = [];
         mailService.addMail(newMail).then(() => {
             if (this.props.onMailSent) {
                 this.props.onMailSent();
-                eventBusService.emit('mail-change');
             }
+            eventBusService.emit('mail-change');
         })
     }
 
     render() {
-        const { from, to, subject } = this.state.mail;
+        const { from, to, subject, body } = this.state.mail;
         return (
             <section className="mail-edit">
                 <form className="mail-edit-form flex direction-column" onSubmit={this.onSendMail}>
@@ -80,7 +80,8 @@ export class MailEditor extends React.Component {
                         <label htmlFor="subject">Subject:</label>
                         <input type="text" name="subject" id="subject" value={subject} onChange={this.onChange} />
                     </div>
-                    <pre className="mail-edit-body" contentEditable="true" onKeyUp={this.onBodyChange}>
+                    <pre className="mail-edit-body" contentEditable="true" value={body} onKeyUp={this.onBodyChange}>
+                        
                     </pre>
                     <button type="submit" className="btn btn-mail-send" onSubmit={this.onSendMail}>Send</button>
                 </form>

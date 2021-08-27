@@ -1,9 +1,9 @@
-
 const { Link, withRouter } = ReactRouterDOM
 import { eventBusService } from "../../../services/event-bus-service.js";
 import { mailService } from "../services/mail.service.js";
 import { MailActions } from "./mail-actions.jsx";
 import { MailDate } from "./mail-date.jsx";
+import { MailLabels } from "./mail-labels.jsx";
 import { MailPreview } from "./mail-preview.jsx";
 import { MailStar } from "./mail-star.jsx";
 
@@ -60,12 +60,13 @@ class _MailListItem extends React.Component {
 
     render() {
         const { mail, type } = this.props;
-        const { status, isRead, isStared, subject, body, sentAt } = mail;
+        const { status, isRead, isStared, subject, body, sentAt, id } = mail;
         const { isChecked, isMouseOver } = this.state;
         return (
             <li className={`mail-list-item ${isRead && 'mail-list-item-read'} flex align-center`} onMouseOver={this.onMouseOver} onMouseLeave={this.onMouseLeave}>
                 <input type="checkbox" name="check" id="check" checked={isChecked} onChange={this.onChange} />
                 <MailStar isStared={isStared} onStarToggle={this.onStarToggle} />
+                <MailLabels mailId={id}/>
                 {status !== 'draft' && <Link to={`/mail/${mail.id}#${type}`} className={`flex mail-list-item-preview ${!isRead && 'bold'}`}>
                     <span className="sender-name">{this.getSenderName()}</span>
                     <MailPreview subject={subject} body={body} isRead={isRead} sentAt={sentAt} />

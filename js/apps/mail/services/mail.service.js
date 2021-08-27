@@ -41,39 +41,14 @@ function getMailsToDisplay(criteria) {
     const isStared = criteria.isStared || null
     const txt = criteria.txt || null;
     const isRead = (!criteria.isRead) ? null : criteria.isRead === 'true' ? true : false;
-    // const isStared = gCriteria.isStared;
-    // const isInTrash = gCriteria.isInTrash
+    const labels = criteria.labels || [];
     return Promise.resolve(gMails.filter(mail =>
         _filterByStatus(mail, status) &&
         _filterByIsStared(mail, isStared) &&
         _filterByTxt(mail, txt) &&
-        _fliterByIsRead(mail, isRead)
+        _fliterByIsRead(mail, isRead) &&
+        _filterByLabels(mail, labels)
     ));
-}
-
-function _filterByStatus(mail, status) {
-    if (!status || status === 'all') return true;
-    return mail.status === status;
-}
-
-function _filterByIsStared(mail, isStared) {
-    if (!isStared) return true;
-    return mail.isStared === isStared;
-}
-
-function _filterByTxt(mail, txt) {
-    if (!txt) return true;
-    if (mail.subject.includes(txt)) return true;
-    if (mail.body.includes(txt)) return true;
-    if (mail.to.includes(txt)) return true;
-    if (mail.from.includes(txt)) return true;
-    return false;
-}
-
-function _fliterByIsRead(mail, isRead) {
-    if (isRead === null) return true;
-    if (isRead === mail.isRead) return true;
-    return false;
 }
 
 function getTypes() {
@@ -153,6 +128,37 @@ function setMailIsRead(mailId, isRead) {
             storageService.saveToStorage(DB_KEY, gMails);
             return mail;
         });
+}
+
+function _filterByStatus(mail, status) {
+    if (!status || status === 'all') return true;
+    return mail.status === status;
+}
+
+function _filterByIsStared(mail, isStared) {
+    if (!isStared) return true;
+    return mail.isStared === isStared;
+}
+
+function _filterByTxt(mail, txt) {
+    if (!txt) return true;
+    if (mail.subject.includes(txt)) return true;
+    if (mail.body.includes(txt)) return true;
+    if (mail.to.includes(txt)) return true;
+    if (mail.from.includes(txt)) return true;
+    return false;
+}
+
+function _fliterByIsRead(mail, isRead) {
+    if (isRead === null) return true;
+    if (isRead === mail.isRead) return true;
+    return false;
+}
+
+function _filterByLabels(mail, labels) {
+    if (!labels.length) return true;
+    if (mail.labels.some(label => labels.includes(label.color))) return true;
+    return false;
 }
 
 function _createMails() {

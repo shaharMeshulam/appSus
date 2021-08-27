@@ -1,0 +1,17 @@
+.app-search-criteria {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    transform: translate(-50%, 100%);
+    background-color: #fff;
+    width: 380px;
+    z-index: 1;
+}
+
+.app-search-criteria li {
+    padding: 10px;
+}
+
+.app-search-lables li {
+    flex-grow: 1;
+}
