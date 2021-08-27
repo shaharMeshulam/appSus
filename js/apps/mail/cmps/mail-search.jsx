@@ -6,6 +6,7 @@ export class MailSearch extends React.Component {
         currentStatus: 'all',
         currentTxt: '',
         currentIsRead: '',
+        currentIsStared: "off",
         criteria: {
             status: '',
             txt: '',
@@ -33,13 +34,14 @@ export class MailSearch extends React.Component {
     onSearch = (ev = null) => {
         if (ev) {
             ev.preventDefault();
-            this.setState(({ criteria, currentStatus, currentTxt, currentIsRead }) =>
+            this.setState(({ criteria, currentStatus, currentTxt, currentIsRead, currentIsStared }) =>
             ({
                 criteria: {
                     ...criteria,
                     status: currentStatus,
                     txt: currentTxt,
-                    isRead: (currentIsRead === '') ? null : currentIsRead
+                    isRead: (currentIsRead === '') ? null : currentIsRead,
+                    isStared: currentIsStared
                 }
             }), () => {
                 if (!this.state.criteria.txt.trim()) return;
@@ -63,11 +65,15 @@ export class MailSearch extends React.Component {
             this.setState({ currentTxt: value }, () => {
                 this.setState(({ criteria, currentTxt }) => ({ criteria: { ...criteria, status: currentTxt } }));
             })
-        } else if (name === "isRead") {
+        } else if (name === 'isRead') {
             this.setState({ currentIsRead: value }, () => {
                 const isRead = (value === '') ? null : value;
                 this.setState(({ criteria }) => ({ criteria: { ...criteria, isRead } }));
             })
+        } else if (name === 'isStared') {
+            this.setState({ currentIsStared: target.checked }, () => {
+                this.setState(({ criteria, currentIsStared }) => ({ criteria: { ...criteria, isStared: currentIsStared } }))
+            });
         }
         else { this.setState(({ criteria }) => ({ criteria: { ...criteria, [name]: value } })); }
     }
@@ -77,7 +83,7 @@ export class MailSearch extends React.Component {
     }
 
     render() {
-        const { showFilter, currentStatus } = this.state;
+        const { showFilter, currentStatus, currentIsStared } = this.state;
         return (
             <form className="app-search" onSubmit={this.onSearch}>
                 <label htmlFor="search" className="flex align-center">
@@ -90,6 +96,10 @@ export class MailSearch extends React.Component {
                     </span>
                     {showFilter && (
                         <ul className="app-search-criteria flex direction-column">
+                            <li className="flex">
+                                <label htmlFor="is-stared">Is stared</label>
+                                <input type="checkbox" name="isStared" id="is-stared" onChange={this.onChange} />
+                            </li>
                             <li className="flex">
                                 <label htmlFor="is-read-both">
                                     <input type="radio" name="isRead" id="is-read-both" defaultChecked={true} value="" onChange={this.onChange} />

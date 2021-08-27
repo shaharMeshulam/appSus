@@ -41,8 +41,6 @@ function getMailsToDisplay(criteria) {
     const isStared = criteria.isStared || null
     const txt = criteria.txt || null;
     const isRead = (!criteria.isRead) ? null : criteria.isRead === 'true' ? true : false;
-    // const txt = gCriteria.txt;
-    // const isRead = gCriteria.isRead;
     // const isStared = gCriteria.isStared;
     // const isInTrash = gCriteria.isInTrash
     return Promise.resolve(gMails.filter(mail =>
