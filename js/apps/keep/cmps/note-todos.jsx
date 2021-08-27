@@ -1,29 +1,27 @@
 import { NoteAction } from "./note-action.jsx"
 
-export class NoteTodos extends React.Component {
-    state = {
-        showActions: null
-    }
+export function NoteTodos({ params }) {
+    const { note, onClick, loadNotes, getShowActions, onMouseEnter, onMouseLeave, editModeToggle, getIsEditMode } = params
 
-    componentWillMount() {
-        this.setState({ showActions: false })
-    }
-
-    onMouseEnter = () => { this.setState({ showActions: true }) }
-    onMouseLeave = () => { this.setState({ showActions: false }) }
-
-    render() {
-        const { note, onClick, loadNotes } = this.props
-
-        return (
-            <div style={{ backgroundColor: (note.style) ? note.style.backgroundColor : 'white' }} className="todos-note note clickable" onClick={onClick} onMouseEnter={this.onMouseEnter} onMouseLeave={this.onMouseLeave}>
-                {note.info.title && <h2 className="note-title">{note.info.title}</h2>}
-                <ul>
-                    {note.info.todos.map((todo, idx) => <li key={`${note.key}${idx}`}>{todo.txt}<input onClick={(ev) => { ev.stopPropagation() }} type="checkbox"></input></li>)}
-                </ul>
-                {this.state.showActions && <NoteAction note={note} loadNotes={loadNotes} />}
-                {!this.state.showActions && <div className="note-action-placeholder"></div>}
-            </div>
-        )
-    }
+    return (
+        <div
+            style={{ backgroundColor: (note.style) ? note.style.backgroundColor : 'white' }}
+            className="todos-note note clickable"
+            onClick={onClick}
+            onMouseEnter={onMouseEnter}
+            onMouseLeave={onMouseLeave}>
+            {note.info.title && <h2 className="note-title">{note.info.title}</h2>}
+            <ul>
+                {note.info.todos.map((todo, idx) => {
+                    return (
+                        <label key={`${note.key}${idx}`} htmlFor={idx}>
+                            <li contentEditable={getIsEditMode}>{todo.txt}<input onClick={(ev) => { ev.stopPropagation() }} type="checkbox" style={{ display: 'none' }} id={idx}></input></li>
+                        </label>
+                    )
+                })}
+            </ul>
+            {getShowActions && <NoteAction note={note} loadNotes={loadNotes} editModeToggle={editModeToggle} />}
+            {!getShowActions && <div className="note-action-placeholder"></div>}
+        </div>
+    )
 }

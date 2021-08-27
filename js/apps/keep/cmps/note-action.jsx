@@ -21,11 +21,12 @@ export class NoteAction extends React.Component {
     }
 
     onPinNote = () => {
-        this.setState(prevState => ({ isPinned: !prevState.isPinned }))
+        noteService.togglePin(this.state.note.id)
+        this.props.loadNotes()
     }
 
     onDeleteBook = () => {
-        noteService.removeNote()
+        noteService.removeNote(this.state.note.id)
         this.props.loadNotes()
     }
 
@@ -36,10 +37,13 @@ export class NoteAction extends React.Component {
     }
 
     render() {
-        const { showPallete } = this.state
+        const { showPallete, note } = this.state
+        const { editModeToggle } = this.props
+
+        if (!note) return <React.Fragment></React.Fragment>
         return (
             <section className="note-action" onClick={(ev) => { ev.stopPropagation() }}>
-                <span onClick={this.onPinNote} className="material-icons-outlined">
+                <span onClick={this.onPinNote} className={`material-icons${(note.isPinned) ? '' : '-outlined'}`}>
                     push_pin
                 </span>
                 {showPallete && <ColorPallete onChangeColor={this.onChangeColor} hideColorPallete={this.hideColorPallete} />}
@@ -49,7 +53,13 @@ export class NoteAction extends React.Component {
                 <span onClick={this.onDeleteBook} className="material-icons-outlined">
                     delete
                 </span>
+                <span onClick={editModeToggle} className="material-icons">
+                    edit
+                </span>
+
             </section>
         )
+
+
     }
 }

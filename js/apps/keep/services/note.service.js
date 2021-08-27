@@ -1,10 +1,13 @@
+import { storageService } from "../../../services/storage.service.js";
+
 export const noteService = {
     addNote,
     getNotes,
     removeNote,
     getNoteById,
     setColor,
-    updateNote
+    updateNote,
+    togglePin
 }
 
 import { utilService } from "../../../services/util.service.js";
@@ -23,14 +26,22 @@ function addNote(note) {
             note.id = utilService.makeId(8)
             console.log(note);
             gNotes.push(note)
+            _saveNotes()
             return
         }
     }
 }
 
+function togglePin(noteId) {
+    const note = gNotes.find(note => note.id === noteId)
+    note.isPinned = !note.isPinned
+    _saveNotes()
+}
+
 function removeNote(noteId) {
-    const noteIdx = gNotes.find(note => note.id === noteId)
+    const noteIdx = gNotes.findIndex(note => note.id === noteId)
     gNotes.splice(noteIdx, 1);
+    _saveNotes()
 }
 
 function getNoteById(noteId) {
@@ -40,6 +51,7 @@ function getNoteById(noteId) {
 
 function setColor(note, color) {
     note.style = { backgroundColor: color }
+    _saveNotes()
 }
 
 function updateNote(noteId, title, content, field) {
@@ -47,12 +59,25 @@ function updateNote(noteId, title, content, field) {
         note => {
             note.info.title = title
             note.info[field] = content
+            _saveNotes()
         }
     )
 
 }
 
-const gNotes = [
+function setNotes() {
+
+}
+
+function _saveNotes() {
+    storageService.saveToStorage('notesDB', gNotes)
+}
+
+function _loadNotes() {
+    return storageService.loadFromStorage('notesDB')
+}
+
+let gNotes = _loadNotes() || [
     {
         id: "n101",
         type: "note-txt",
@@ -71,7 +96,7 @@ const gNotes = [
             url: "https://i.stack.imgur.com/Op6dK.png",
             title: "Bobi and Me"
         },
-        style: { backgroundColor: "#00d" }
+        style: { backgroundColor: "#D3D3D3" }
     },
     {
         id: "n103",

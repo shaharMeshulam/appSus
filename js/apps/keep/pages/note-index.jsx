@@ -18,16 +18,12 @@ class _KeepApp extends React.Component {
         )
     }
 
-    onClick = (url) => {
-        this.props.history.push(url)
-    }
-
     render() {
         const { notes } = this.state
         return (
             <React.Fragment>
                 <NoteAdd loadNotes={this.loadNotes} />
-                {notes && <NoteList loadNotes={this.loadNotes} notes={notes} onClick={this.onClick} />}
+                {notes && <NoteList loadNotes={this.loadNotes} notes={notes} />}
             </React.Fragment>
         )
     }
