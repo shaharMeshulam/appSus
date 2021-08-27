@@ -1,9 +1,9 @@
-import { MailLabels } from "./mail-labels.jsx"
+import { MailAddLabels } from "./mail-add-labels.jsx"
 
 export function MailActions({mailId, onRemove, isRead, onToggleRead }) {
     return (
         <ul className="mail-actions flex">
-            <MailLabels mailId={mailId}/>
+            <MailAddLabels mailId={mailId}/>
             {!isRead && <li title="Mark as read">
                 <span className="btn material-icons-outlined" onClick={onToggleRead}>
                     mark_email_read

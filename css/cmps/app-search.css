@@ -11,10 +11,3 @@
 .app-search [for=search] [name=txt]:focus {
     outline: 0;
 }
-
-.app-search-criteria {
-    position: absolute;
-    bottom: 0;
-    left: 0;
-    transform: translate(-50%, 100%);
-}

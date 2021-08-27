@@ -1,6 +1,7 @@
 import { eventBusService } from "../../../services/event-bus-service.js";
 import { MailActions } from "../cmps/mail-actions.jsx";
 import { MailDate } from "../cmps/mail-date.jsx";
+import { MailLabels } from "../cmps/mail-labels.jsx";
 import { MailStar } from "../cmps/mail-star.jsx";
 import { mailService } from "../services/mail.service.js";
 
@@ -50,6 +51,7 @@ export class MailDetails extends React.Component {
                         <p className="mail-details-from">{mail.from}</p>
                         <div className="actions flex">
                             <MailStar isStared={mail.isStared} onStarToggle={this.onStarToggle} />
+                            <MailLabels mailId={mail.id}/>
                             <MailActions mailId={mail.id} onRemove={this.onRemove} isRead={mail.isRead} onToggleRead={this.onToggleRead} />
                             <MailDate sentAt={mail.sentAt} isRead={true} />
                         </div>

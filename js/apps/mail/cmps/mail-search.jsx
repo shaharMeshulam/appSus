@@ -1,18 +1,21 @@
 import { eventBusService } from "../../../services/event-bus-service.js";
+import { mailService } from "../services/mail.service.js";
 
 export class MailSearch extends React.Component {
     state = {
         showFilter: false,
+        labels: null,
         currentStatus: 'all',
         currentTxt: '',
         currentIsRead: '',
-        currentIsStared: "off",
+        currentIsStared: null,
+        currentLabels: [],
         criteria: {
             status: '',
             txt: '',
             isRead: null,
             isStared: null,
-            lables: [] // has any of the labels
+            lables: []
         }
     }
 
@@ -20,6 +23,8 @@ export class MailSearch extends React.Component {
 
     componentDidMount() {
         this.removeEventBus = eventBusService.on('search', this.onSearchChange);
+        mailService.getLabels()
+            .then(labels => this.setState({ labels }));
     }
 
     componentWillUnmount() {
@@ -34,24 +39,18 @@ export class MailSearch extends React.Component {
     onSearch = (ev = null) => {
         if (ev) {
             ev.preventDefault();
-            this.setState(({ criteria, currentStatus, currentTxt, currentIsRead, currentIsStared }) =>
+            this.setState(({ criteria, currentStatus, currentTxt, currentIsRead, currentIsStared, currentLabels }) =>
             ({
                 criteria: {
                     ...criteria,
                     status: currentStatus,
                     txt: currentTxt,
                     isRead: (currentIsRead === '') ? null : currentIsRead,
-                    isStared: currentIsStared
+                    isStared: currentIsStared,
+                    labels: currentLabels
                 }
-            }), () => {
-                if (!this.state.criteria.txt.trim()) return;
-                eventBusService.emit('search-change', this.state.criteria)
-            }
-            );
-        } else {
-            if (this.state.criteria.txt && !this.state.criteria.txt.trim()) return;
-            eventBusService.emit('search-change', this.state.criteria);
-        }
+            }), () => eventBusService.emit('search-change', this.state.criteria));
+        } else eventBusService.emit('search-change', this.state.criteria);
     }
 
     onChange = ({ target }) => {
@@ -72,8 +71,21 @@ export class MailSearch extends React.Component {
             })
         } else if (name === 'isStared') {
             this.setState({ currentIsStared: target.checked }, () => {
-                this.setState(({ criteria, currentIsStared }) => ({ criteria: { ...criteria, isStared: currentIsStared } }))
+                const isStared = target.checked ? target.checked : null;
+                this.setState(({ criteria }) => ({ criteria: { ...criteria, isStared: isStared } }));
             });
+        } else if (name === 'lables') {
+            if (this.state.currentLabels.includes(value)) {
+                const idx = this.state.currentLabels.indexOf(value);
+                const newLabels = this.state.currentLabels.splice(idx, 0);
+                this.setState(({ currentLabels }) => ({ currentLabels: newLabels }), () => {
+                    this.setState(({ criteria }) => ({ criteria: { ...criteria, labels: newLabels } }));
+                });
+            } else {
+                this.setState(({ currentLabels }) => ({ currentLabels: [...currentLabels, value] }), () => {
+                    this.setState(({ criteria }) => ({ criteria: { ...criteria, labels: this.state.currentLabels } }));
+                });
+            }
         }
         else { this.setState(({ criteria }) => ({ criteria: { ...criteria, [name]: value } })); }
     }
@@ -83,7 +95,7 @@ export class MailSearch extends React.Component {
     }
 
     render() {
-        const { showFilter, currentStatus, currentIsStared } = this.state;
+        const { showFilter, currentStatus, labels } = this.state;
         return (
             <form className="app-search" onSubmit={this.onSearch}>
                 <label htmlFor="search" className="flex align-center">
@@ -96,9 +108,21 @@ export class MailSearch extends React.Component {
                     </span>
                     {showFilter && (
                         <ul className="app-search-criteria flex direction-column">
+                            <li>
+                                <ul className="app-search-lables flex">
+                                    {labels.map(label => (
+                                        <li key={label.color} style={{ backgroundColor: label.color }}>
+                                            <label htmlFor={label.value}>
+                                                <input type="checkbox" name="lables" id={label.value} value={label.color} onChange={this.onChange} />
+                                                {label.value}
+                                            </label>
+                                        </li>
+                                    ))}
+                                </ul>
+                            </li>
                             <li className="flex">
-                                <label htmlFor="is-stared">Is stared</label>
                                 <input type="checkbox" name="isStared" id="is-stared" onChange={this.onChange} />
+                                <label htmlFor="is-stared">Is stared</label>
                             </li>
                             <li className="flex">
                                 <label htmlFor="is-read-both">
@@ -123,6 +147,9 @@ export class MailSearch extends React.Component {
                                     <option value="trash">Trash</option>
                                     <option value="draft">Draft</option>
                                 </select>
+                            </li>
+                            <li>
+                                <button className="btn">Search</button>
                             </li>
                         </ul>
                     )}
