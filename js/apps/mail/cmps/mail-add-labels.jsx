@@ -19,12 +19,11 @@ export class MailAddLabels extends React.Component {
         mailService.addLabel(this.props.mailId, label)
             .then(() => {
                 this.onToggleAddLabel();
-                this.getMailLabels();
             });
     }
 
     render() {
-        const { showLabels, labels, mailLabels } = this.state;
+        const { showLabels, labels } = this.state;
         return (
             <ul className="mail-labels flex">
                 <li title="Add label" title="Add label" onClick={this.onToggleAddLabel}>
