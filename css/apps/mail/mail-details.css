@@ -5,3 +5,7 @@
 .mail-detail-body {
     white-space: pre-line;
 }
+
+.mail-details .mail-edit-body {
+    min-height: 250px;
+}
