@@ -78,7 +78,7 @@ export class MailSearch extends React.Component {
             if (this.state.currentLabels.includes(value)) {
                 const idx = this.state.currentLabels.indexOf(value);
                 const newLabels = this.state.currentLabels.splice(idx, 0);
-                this.setState(({ currentLabels }) => ({ currentLabels: newLabels }), () => {
+                this.setState({ currentLabels: newLabels }, () => {
                     this.setState(({ criteria }) => ({ criteria: { ...criteria, labels: newLabels } }));
                 });
             } else {
