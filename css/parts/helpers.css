@@ -30,3 +30,10 @@
 .remove-txt-marker {
     user-select: none;
 }
+
+.btn {
+    cursor: pointer;
+    border: 0;
+    background-color: transparent;
+    padding: 0;
+}
