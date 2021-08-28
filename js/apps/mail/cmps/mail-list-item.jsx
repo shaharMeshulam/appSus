@@ -14,7 +14,9 @@ class _MailListItem extends React.Component {
     }
 
     onChange = () => {
-        this.setState(({ isChecked }) => ({ isChecked: !isChecked }));
+        this.setState(({ isChecked }) => ({ isChecked: !isChecked }), () => {
+            this.props.onMailSetChecked(this.props.mail.id, this.state.isChecked);
+        });
     }
 
     componentDidUpdate(prevProps, prevState) {
@@ -66,7 +68,7 @@ class _MailListItem extends React.Component {
             <li className={`mail-list-item ${isRead && 'mail-list-item-read'} flex align-center`} onMouseOver={this.onMouseOver} onMouseLeave={this.onMouseLeave}>
                 <input type="checkbox" name="check" id="check" checked={isChecked} onChange={this.onChange} />
                 <MailStar isStared={isStared} onStarToggle={this.onStarToggle} />
-                <MailLabels mailId={id}/>
+                <MailLabels mailId={id} />
                 {status !== 'draft' && <Link to={`/mail/${mail.id}#${type}`} className={`flex mail-list-item-preview ${!isRead && 'bold'}`}>
                     <span className="sender-name">{this.getSenderName()}</span>
                     <MailPreview subject={subject} body={body} isRead={isRead} sentAt={sentAt} />

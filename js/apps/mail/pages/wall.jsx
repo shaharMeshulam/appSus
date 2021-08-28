@@ -13,20 +13,25 @@ export class Wall extends React.Component {
         this.setState({ sortBy });
     }
 
-    onSort = ({target}) => {
+    onSort = ({ target }) => {
         const sortBy = target.value;
-        this.setState({sortBy});
+        this.setState({ sortBy });
         this.props.onSort(sortBy);
     }
 
     render() {
-        const { mails, type, onToggleCheckAll, onSort } = this.props;
+        const { mails, type, onToggleCheckAll, onMailSetChecked, isShowTrash, onRemove } = this.props;
         const { sortBy } = this.state;
         if (!mails) return <section className="wall">loading</section>
         return (
             <section className="wall">
                 <section className="actions flex justify-between">
-                    <input type="checkbox" onChange={onToggleCheckAll} />
+                    <div>
+                        <input type="checkbox" onChange={onToggleCheckAll} />
+                        {isShowTrash && <span className="btn material-icons-outlined" onClick={onRemove}>
+                            delete
+                        </span>}
+                    </div>
                     <label htmlFor="sort-by">
                         Sort by:
                         <select name="sortBy" id="sort-by" value={sortBy} onChange={this.onSort}>
@@ -36,7 +41,7 @@ export class Wall extends React.Component {
                         </select>
                     </label>
                 </section>
-                <MailList mails={mails} type={type} />
+                <MailList mails={mails} type={type} onMailSetChecked={onMailSetChecked} />
             </section>
         )
     }

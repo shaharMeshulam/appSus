@@ -1,9 +1,8 @@
-const { Route } = ReactRouterDOM;
+const { Route, withRouter } = ReactRouterDOM;
 import { MailNav } from '../cmps/mail-nav.jsx';
 import { Wall } from './wall.jsx';
 import { MailDetails } from './mail-details.jsx';
 import { FloatingMailEditor } from '../cmps/floating-mail-editor.jsx';
-const { withRouter } = ReactRouterDOM
 import { eventBusService } from '../../../services/event-bus-service.js';
 import { mailService } from '../services/mail.service.js';
 
@@ -13,7 +12,8 @@ export class _DashBoard extends React.Component {
         mail: null,
         mails: null,
         type: null,
-        criteria: null
+        criteria: null,
+        isShowTrash: false
     }
 
     removeEventBusMailEdit;
@@ -68,8 +68,31 @@ export class _DashBoard extends React.Component {
                 mail.isChecked = this.state.isAllChecked;
                 return mail;
             })
-            this.setState({ mails });
+            this.setState({ mails }, this.setIsShowTrash);
         });
+    }
+
+    onMailSetChecked = (mailId, isChecked) => {
+        const newMails = this.state.mails;
+        const idx = newMails.findIndex(mail=> mail.id===mailId);
+        newMails[idx].isChecked = isChecked;
+        this.setState({mails: newMails});
+        this.setIsShowTrash()
+    }
+
+    setIsShowTrash = () => {
+        const isShowTrash = this.state.mails.some(mail => mail.isChecked);
+        this.setState({isShowTrash});
+    }
+
+    onRemove = () => {
+        const toBeRemovedPrmsAll = this.state.mails.reduce((acc, currMail)=>{
+            if(currMail.isChecked) acc.push(mailService.remove(currMail.id));
+            return acc;
+        }, []);
+        Promise.all(toBeRemovedPrmsAll).then(() => {
+            this.getMailsForDisplay(this.state.criteria);
+        })
     }
 
     onEdit = (mailId) => {
@@ -92,7 +115,7 @@ export class _DashBoard extends React.Component {
     }
 
     render() {
-        const { isEditNewMail, mail, mails, type } = this.state;
+        const { isEditNewMail, mail, mails, type, isShowTrash } = this.state;
         return (
             <React.Fragment>
                 <div className="main-container flex">
@@ -101,7 +124,14 @@ export class _DashBoard extends React.Component {
                     <Route
                         exact path='/mail'
                         render={(props) => (
-                            <Wall {...props} mails={mails} type={type} onToggleCheckAll={this.onToggleCheckAll} onSort={this.onSort}/>
+                            <Wall {...props} 
+                                mails={mails} 
+                                type={type} 
+                                onToggleCheckAll={this.onToggleCheckAll} 
+                                onSort={this.onSort}
+                                onMailSetChecked={this.onMailSetChecked}
+                                isShowTrash={isShowTrash}
+                                onRemove={this.onRemove}/>
                         )} />
                     {isEditNewMail && (
                         <FloatingMailEditor onCloseEditor={this.onCloseEditor} mail={mail} />
