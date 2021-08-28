@@ -2,14 +2,17 @@ import { NoteTxt } from './note-txt.jsx'
 import { NoteImg } from './note-img.jsx'
 import { NoteVid } from './note-vid.jsx'
 import { NoteTodos } from './note-todos.jsx'
+import { noteService } from '../services/note.service.js'
 
 export class DinamicNote extends React.Component {
     state = {
         showActions: null,
         isEditMode: null,
         content: '',
-        title: ''
+        title: '',
+        target: null
     }
+
     componentWillMount() {
         const { note } = this.props
         this.setState({
@@ -20,11 +23,16 @@ export class DinamicNote extends React.Component {
         })
     }
 
-    editModeToggle = () => { this.setState(prevState => ({ isEditMode: !prevState.isEditMode })) }
+    setTarget = (target) => { this.setState({ target }) }
     onMouseEnter = () => { this.setState({ showActions: true }) }
     onMouseLeave = () => { this.setState({ showActions: false, isEditMode: false }) }
     get getShowActions() { return this.state.showActions }
-    get getIsEditMode() { return this.state.isEditMode }
+    get getTarget() { return this.state.target }
+    updateNote = (field) => {
+        debugger
+
+        noteService.updateNote(this.props.note.id, this.getTarget.innerText, field || this.getField)
+    }
 
     get getField() {
         const { note } = this.props
@@ -46,10 +54,11 @@ export class DinamicNote extends React.Component {
         params.note = note
         params.loadNotes = loadNotes
         params.getShowActions = this.getShowActions
-        params.getIsEditMode = this.getIsEditMode
         params.onMouseEnter = this.onMouseEnter
         params.onMouseLeave = this.onMouseLeave
-        params.editModeToggle = this.editModeToggle
+        params.setTarget = this.setTarget
+        params.updateNote = this.updateNote
+
 
         if (!note) return <React.Fragment></React.Fragment>
         switch (note.type) {
