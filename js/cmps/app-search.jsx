@@ -15,7 +15,7 @@ export class AppSearch extends React.Component {
 
     render() {
         return (
-            this.checkIfRouteIncludes('mail') && <MailSearch />
+            <MailSearch display={this.checkIfRouteIncludes('mail')} />
         )
     }
 }

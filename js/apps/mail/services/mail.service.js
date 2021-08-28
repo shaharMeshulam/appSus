@@ -182,7 +182,7 @@ function _filterByLabels(mail, labels) {
 
 function _sortBy(m1, m2) {
     switch (gSortBy) {
-        case 'ascending':
+        case 'decening':
             return new Date(m2.sentAt) - new Date(m1.sentAt);
         case 'title':
             return m1.subject.localeCompare(m2.subject);

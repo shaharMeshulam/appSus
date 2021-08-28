@@ -3,6 +3,7 @@ import { mailService } from "../services/mail.service.js";
 
 export class MailSearch extends React.Component {
     state = {
+        display: this.props.display,
         showFilter: false,
         labels: null,
         currentStatus: 'all',
@@ -26,6 +27,11 @@ export class MailSearch extends React.Component {
         mailService.getLabels()
             .then(labels => this.setState({ labels }));
     }
+
+    componentDidUpdate(prevProps, prevState) {
+        if(prevProps.display !== this.props.display) this.setState({display: this.props.display});
+    }
+    
 
     componentWillUnmount() {
         this.removeEventBus();
@@ -95,9 +101,9 @@ export class MailSearch extends React.Component {
     }
 
     render() {
-        const { showFilter, currentStatus, labels } = this.state;
+        const { showFilter, currentStatus, labels, display } = this.state;
         return (
-            <form className="app-search" onSubmit={this.onSearch}>
+            display && <form className="app-search" onSubmit={this.onSearch}>
                 <label htmlFor="search" className="flex align-center">
                     <span className="btn material-icons-outlined" onClick={this.onToggleFilter}>
                         tune
