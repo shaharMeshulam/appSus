@@ -1,8 +1,9 @@
 import { eventBusService } from "../../../services/event-bus-service.js";
+import { MailIsreadPersentage } from "./mail-isread-persentage.jsx";
 
 const { NavLink } = ReactRouterDOM;
 
-export function MailNav({ onEditNewMail }) {
+export function MailNav({ onEditNewMail, isReadPersentage }) {
     const getIsActive = (hash) => {
         return window.location.hash.includes(hash);
     }
@@ -77,6 +78,7 @@ export function MailNav({ onEditNewMail }) {
                 </span>
                 <span>All</span>
             </NavLink>
+            <MailIsreadPersentage isReadPersentage={isReadPersentage}/>
         </nav>
     )
 }

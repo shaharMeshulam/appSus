@@ -13,7 +13,8 @@ export class _DashBoard extends React.Component {
         mails: null,
         type: null,
         criteria: null,
-        isShowTrash: false
+        isShowTrash: false,
+        isReadPersentage: 0
     }
 
     removeEventBusMailEdit;
@@ -59,6 +60,8 @@ export class _DashBoard extends React.Component {
                     return mail;
                 })
             }));
+        mailService.getIsReadPresentage()
+            .then(isReadPersentage => this.setState({isReadPersentage}));
     }
 
     onToggleCheckAll = () => {
@@ -115,11 +118,11 @@ export class _DashBoard extends React.Component {
     }
 
     render() {
-        const { isEditNewMail, mail, mails, type, isShowTrash } = this.state;
+        const { isEditNewMail, mail, mails, type, isShowTrash, isReadPersentage } = this.state;
         return (
             <React.Fragment>
                 <div className="main-container flex">
-                    <MailNav onEditNewMail={this.onEditNewMail} />
+                    <MailNav onEditNewMail={this.onEditNewMail} isReadPersentage={isReadPersentage}/>
                     <Route path="/mail/:mailId" component={MailDetails} />
                     <Route
                         exact path='/mail'

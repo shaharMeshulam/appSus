@@ -28,7 +28,8 @@ export const mailService = {
     getMailLabels,
     addLabel,
     setSortBy,
-    getSortBy
+    getSortBy,
+    getIsReadPresentage
 };
 
 init();
@@ -129,7 +130,7 @@ function setSortBy(sortBy) {
 }
 
 function getSortBy() {
-    return gSortBy; 
+    return gSortBy;
 }
 
 function setMailIsRead(mailId, isRead) {
@@ -139,6 +140,12 @@ function setMailIsRead(mailId, isRead) {
             storageService.saveToStorage(DB_KEY, gMails);
             return mail;
         });
+}
+
+function getIsReadPresentage() {
+    const isReadCount = gMails.filter(mail => mail.isRead).length;
+    const totalCount = gMails.length;
+    return Promise.resolve(isReadCount / totalCount * 100 );
 }
 
 function _filterByStatus(mail, status) {
@@ -173,7 +180,7 @@ function _filterByLabels(mail, labels) {
 }
 
 function _sortBy(m1, m2) {
-    switch(gSortBy) {
+    switch (gSortBy) {
         case 'ascending':
             return new Date(m2.sentAt) - new Date(m1.sentAt);
         case 'title':
