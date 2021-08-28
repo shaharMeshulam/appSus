@@ -53,3 +53,10 @@
         max-width: 350px;
     }
 }
+
+.btn {
+    cursor: pointer;
+    border: 0;
+    background-color: transparent;
+    padding: 0;
+}
