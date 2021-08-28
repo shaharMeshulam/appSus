@@ -67,9 +67,9 @@ export class MailDetails extends React.Component {
                             <MailDate sentAt={mail.sentAt} isRead={true} />
                         </div>
                     </div>
-                    <pre className="mail-detail-body">
-                        {mail.body}
-                    </pre>
+                    <div className="mail-detail-body" dangerouslySetInnerHTML={{ __html: mail.body }}>
+                        
+                    </div>
                     {isReplay && (
                         <MailEditor to={mail.from} onMailSent={this.onFinishReplay}/>
                     )}

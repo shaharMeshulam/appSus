@@ -15,6 +15,7 @@
 @import url(./apps/mail/wall.css);
 @import url(./apps/mail/mail-labels.css);
 @import url(./apps/mail/mail-search.css);
+@import url(./apps//mail/mail-isread-persenrage.css);
 
 @import url(./apps/keep/note-preview.css);
 @import url(./apps/keep/note-list.css);

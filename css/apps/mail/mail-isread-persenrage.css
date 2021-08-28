@@ -1,0 +1,12 @@
+.is-read-persentage {
+    height: 25px;
+}
+
+.read-persentage {
+    background-color: green;
+}
+
+.unread-persentage {
+    background-color: #ccc;
+    flex-grow: 1;
+}

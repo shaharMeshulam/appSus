@@ -8,8 +8,8 @@ export class MailEditor extends React.Component {
             id: utilService.makeId(),
             from: mailService.getUser().mail,
             to: this.props.to || '',
-            subject: '',
-            body: ''
+            subject: this.props.subject || '',
+            body: this.props.body || ''
         }
     }
 
@@ -54,7 +54,7 @@ export class MailEditor extends React.Component {
         newMail.status = 'sent';
         newMail.isRead = true;
         newMail.isStared = false;
-        if(!newMail.labels) newMail.labels = [];
+        if (!newMail.labels) newMail.labels = [];
         mailService.addMail(newMail).then(() => {
             if (this.props.onMailSent) {
                 this.props.onMailSent();
@@ -65,6 +65,7 @@ export class MailEditor extends React.Component {
 
     render() {
         const { from, to, subject, body } = this.state.mail;
+        const { isHtml = false } = this.props
         return (
             <section className="mail-edit">
                 <form className="mail-edit-form flex direction-column" onSubmit={this.onSendMail}>
@@ -80,9 +81,10 @@ export class MailEditor extends React.Component {
                         <label htmlFor="subject">Subject:</label>
                         <input type="text" name="subject" id="subject" value={subject} onChange={this.onChange} />
                     </div>
-                    <pre className="mail-edit-body" contentEditable="true" value={body} onKeyUp={this.onBodyChange}>
-                        
-                    </pre>
+                    {!isHtml && <div className="mail-edit-body" contentEditable="true" value={body} onKeyUp={this.onBodyChange}>
+                    </div>}
+                    {isHtml && <div className="mail-edit-body" contentEditable="true" dangerouslySetInnerHTML={{ __html: body }} value={body} onKeyUp={this.onBodyChange}>
+                    </div>}
                     <button type="submit" className="btn btn-mail-send" onSubmit={this.onSendMail}>Send</button>
                 </form>
             </section>

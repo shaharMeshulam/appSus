@@ -13,6 +13,7 @@ const USER = {
     mail: 'shahar.mesh@gmail.com'
 }
 let gMails = storageService.loadFromStorage(DB_KEY) || [];
+let gSortBy = 'decening';
 
 export const mailService = {
     getMailsToDisplay,
@@ -26,6 +27,9 @@ export const mailService = {
     getLabels,
     getMailLabels,
     addLabel,
+    setSortBy,
+    getSortBy,
+    getIsReadPresentage
 };
 
 init();
@@ -48,7 +52,7 @@ function getMailsToDisplay(criteria) {
         _filterByTxt(mail, txt) &&
         _fliterByIsRead(mail, isRead) &&
         _filterByLabels(mail, labels)
-    ));
+    ).sort(_sortBy));
 }
 
 function getTypes() {
@@ -106,6 +110,7 @@ function getMailById(id) {
 function remove(mailId) {
     return getMailById(mailId)
         .then(mail => {
+            if(!mail) return;
             if (mail.status === 'trash') gMails.splice(gMails.findIndex(m => m.id === mailId), 1);
             else mail.status = 'trash';
             storageService.saveToStorage(DB_KEY, gMails);
@@ -121,6 +126,14 @@ function toggleStared(mailId) {
         });
 }
 
+function setSortBy(sortBy) {
+    gSortBy = sortBy;
+}
+
+function getSortBy() {
+    return gSortBy;
+}
+
 function setMailIsRead(mailId, isRead) {
     return this.getMailById(mailId)
         .then(mail => {
@@ -128,6 +141,12 @@ function setMailIsRead(mailId, isRead) {
             storageService.saveToStorage(DB_KEY, gMails);
             return mail;
         });
+}
+
+function getIsReadPresentage() {
+    const isReadCount = gMails.filter(mail => mail.isRead).length;
+    const totalCount = gMails.length;
+    return Promise.resolve(isReadCount / totalCount * 100 );
 }
 
 function _filterByStatus(mail, status) {
@@ -159,6 +178,17 @@ function _filterByLabels(mail, labels) {
     if (!labels.length) return true;
     if (mail.labels.some(label => labels.includes(label.color))) return true;
     return false;
+}
+
+function _sortBy(m1, m2) {
+    switch (gSortBy) {
+        case 'ascending':
+            return new Date(m2.sentAt) - new Date(m1.sentAt);
+        case 'title':
+            return m1.subject.localeCompare(m2.subject);
+        default:
+            return new Date(m1.sentAt) - new Date(m2.sentAt);
+    }
 }
 
 function _createMails() {
