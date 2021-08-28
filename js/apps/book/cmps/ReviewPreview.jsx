@@ -1,4 +1,4 @@
-import { bookService } from '../../services/books-service.js'
+import { bookService } from '../service/books-service.js'
 
 export function ReviewPreview({ review, bookId, changeState }) {
     const { fullName, txt, rate, date, id } = review

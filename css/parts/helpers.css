@@ -30,3 +30,26 @@
 .remove-txt-marker {
     user-select: none;
 }
+
+.main-layout {
+    max-width: 1200px;
+    margin: auto;
+}
+
+@media screen and (max-width:1300px) {
+    .main-layout {
+        max-width: 800px;
+    }
+}
+
+@media screen and (max-width:870px) {
+    .main-layout {
+        max-width: 550px;
+    }
+}
+
+@media screen and (max-width:650px) {
+    .main-layout {
+        max-width: 350px;
+    }
+}

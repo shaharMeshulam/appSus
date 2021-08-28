@@ -68,7 +68,7 @@ export class NoteAdd extends React.Component {
             <section className="add-note">
                 <input onChange={this.handleChange} value={title} name="title" type="text" placeholder="title" />
                 <input onChange={this.handleChange} value={this.state.info[this.getName]} name={this.getName} type="text" placeholder={this.getPlaceholder} />
-                <button onClick={this.onAddNote}>Add Note</button>
+                <button className="clickable" onClick={this.onAddNote}>Add Note</button>
 
                 <div className="note-type">
                     <span onClick={() => { this.onSetNoteType('note-vid') }} className="clickable material-icons-outlined">

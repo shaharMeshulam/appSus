@@ -1,5 +1,5 @@
 import { searchService } from '../../../services/gbook-service.js'
-import { bookService } from '../../../services/books-service.js'
+import { bookService } from '../service/books-service.js'
 
 export class Search extends React.Component {
     state = {

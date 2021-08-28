@@ -4,7 +4,7 @@ import { DinamicNote } from './dinamic-note.jsx'
 
 export function NoteList({ notes, loadNotes }) {
     return (
-        <section className="notes-list">
+        <section className="notes-list main-layout">
             <h1>Pinned Notes</h1>
             <ul className="pinned-notes">
                 {notes.map(note => {
