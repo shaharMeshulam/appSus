@@ -12,7 +12,8 @@ export class _DashBoard extends React.Component {
         isEditNewMail: false,
         mail: null,
         mails: null,
-        type: null
+        type: null,
+        criteria: null
     }
 
     removeEventBusMailEdit;
@@ -34,26 +35,24 @@ export class _DashBoard extends React.Component {
         else eventBusService.emit('search', { isStared: true });
     }
 
-    // componentDidUpdate(prevProps, prevState) {
-    //     if (prevProps.location.hash !== this.props.location.hash) this.setType();
-    // }
     componentWillUnmount() {
         this.removeEventBusSearchChange()
         this.removeEventBusMailChange();
         this.removeEventBusMailEdit();
     }
 
-    setType = (criteria) => { //pass the criteria
+    setType = (criteria) => {
         const type = criteria.status ? criteria.status : 'stared';
         if (!type || !mailService.getTypes().some(t => t.includes(type))) {
             this.props.history.push('/');
             return;
         } else if (type === 'all') this.props.history.push('/mail#all');
-        this.setState({ type: type }, () => { this.getMailsForDisplay(criteria) });//pass the criteria
+        this.setState({criteria});
+        this.setState({ type: type }, () => { this.getMailsForDisplay(criteria) });
     }
 
     getMailsForDisplay = (criteria) => {
-        mailService.getMailsToDisplay(criteria) //pass the criteria
+        mailService.getMailsToDisplay(criteria)
             .then(mails => this.setState({
                 mails: mails.map(mail => {
                     mail.isChecked = false
@@ -86,6 +85,12 @@ export class _DashBoard extends React.Component {
         this.setState({ isEditNewMail: false })
     }
 
+    onSort = (sortBy) => {
+        const {criteria} = this.state;
+        mailService.setSortBy(sortBy);
+        this.getMailsForDisplay(criteria);
+    }
+
     render() {
         const { isEditNewMail, mail, mails, type } = this.state;
         return (
@@ -96,7 +101,7 @@ export class _DashBoard extends React.Component {
                     <Route
                         exact path='/mail'
                         render={(props) => (
-                            <Wall {...props} mails={mails} type={type} onToggleCheckAll={this.onToggleCheckAll} />
+                            <Wall {...props} mails={mails} type={type} onToggleCheckAll={this.onToggleCheckAll} onSort={this.onSort}/>
                         )} />
                     {isEditNewMail && (
                         <FloatingMailEditor onCloseEditor={this.onCloseEditor} mail={mail} />
