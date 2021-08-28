@@ -127,8 +127,8 @@ export class _DashBoard extends React.Component {
         return (
             <React.Fragment>
                 <div className="main-container flex">
-                    <button className="btn btn-hamburger" onClick={this.onShowMailNav}>
-                        <span className="material-icons-outlined">
+                    <button className="btn btn-hamburger">
+                        <span className="material-icons-outlined" onClick={this.onShowMailNav}>
                             menu
                         </span>
                     </button>

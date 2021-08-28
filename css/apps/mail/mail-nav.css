@@ -18,17 +18,29 @@
     text-decoration: none;
 }
 
+.mail-nav-item:not(:nth-child(2)) {
+    padding-inline-start: 20px;
+}
+
 .mail-nav-item.active {
     background-color: #fce8e6;
     color: #d93025;
 }
 
-.mail-nav-item:hover:not(.active):not(:first-child)  {
+.mail-nav-item:hover:not(.active)  {
     background-color: #f1f3f4;
+}
+
+.mail-nav-item:first-of-type:hover {
+    background-color: #fff !important;
 }
 
 .mail-nav-item .material-icons-outlined {
     margin-right: 15px;
+}
+
+.mail-nav-item {
+    
 }
 
 .mail-nav-item-compose {

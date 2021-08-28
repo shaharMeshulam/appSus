@@ -25,9 +25,15 @@
 
 @media screen and (max-width:769px) {
     .app-search-criteria {
-        transform: translate(-25%, 100%);
+        transform: translate(-20%, 100%);
     }
     .app-search-criteria li {
       justify-content: center;
+    }
+    .app-search-lables label {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
     }
 }
