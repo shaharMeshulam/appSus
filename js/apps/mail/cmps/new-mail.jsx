@@ -10,9 +10,10 @@ export class NewMail extends React.Component {
     componentDidMount() {
         const urlPrms = new URLSearchParams(this.props.location.search);
         console.log('urlPrms', urlPrms);
-        if (urlPrms.subject) this.setState({ subject: urlPrms.subject });
-        if (urlPrms.body) this.setState({ body: urlPrms.body });
-        if (urlPrms.isHtml) this.setState({ isHtml: urlPrms.isHtml });
+        const subject = urlPrms.get('subject')
+        const body = urlPrms.get('body')
+        const isHtml = urlPrms.get('isHtml')
+        this.setState({ subject, body, isHtml })
     }
 
     onMailSent = () => {
@@ -20,9 +21,9 @@ export class NewMail extends React.Component {
     }
 
     render() {
-        const { subject, body,isHtml } = this.state;
+        const { subject, body, isHtml } = this.state;
         return (
-            <MailEditor subject={subject} body={body} isHtml={isHtml} onMailSent={this.onMailSent}/>
+            <MailEditor subject={subject} body={body} isHtml={isHtml} onMailSent={this.onMailSent} />
         )
     }
 }

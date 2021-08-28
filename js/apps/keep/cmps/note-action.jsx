@@ -51,7 +51,7 @@ class _NoteAction extends React.Component {
             if (type === 'note-img') url = `<img src="${url}"/>`
             else url = `<iframe src="${note.url}"></iframe>`
         }
-        props.history.push(`/mail/new?subject=${title}&body=${(url) ? url : ''}${(txt) ? txt : ''}&isHtml${type === 'note-img' || type === 'note-vid'}`)
+        this.props.history.push(`/mail/new?subject=${(title) ? title : ''}&body=${(url) ? url : ''}${(txt) ? txt : ''}&isHtml=${type === 'note-img' || type === 'note-vid'}`)
     }
 
     render() {
@@ -73,7 +73,7 @@ class _NoteAction extends React.Component {
                 <span title="Duplicate note" onClick={this.onDuplicateNote} className="clickable material-icons-outlined">
                     content_copy
                 </span>
-                <span title="Send as email" className="material-icons-outlined">
+                <span title="Send as email" onClick={this.onEmailClick} className="material-icons-outlined">
                     email
                 </span>
                 {note.type === 'note-todos' && <span title="Add task" className="material-icons-outlined clickable">

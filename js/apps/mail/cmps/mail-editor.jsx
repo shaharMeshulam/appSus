@@ -21,6 +21,12 @@ export class MailEditor extends React.Component {
         if (mail) this.setState({ mail });
     }
 
+    componentDidUpdate(prevProps, prevState) {
+        if (prevProps.subject !== this.props.subject) this.setState(({ mail }) => ({ mail: { ...mail, subject: this.props.subject } }))
+        if (prevProps.body !== this.props.body) this.setState(({ mail }) => ({ mail: { ...mail, body: this.props.body } }))
+    }
+
+
     componentWillUnmount() {
         clearInterval(this.intervalId);
     }
@@ -45,7 +51,7 @@ export class MailEditor extends React.Component {
     }
 
     onBodyChange = ({ target }) => {
-        this.setState(({ mail }) => ({ mail: { ...mail, body: target.innerText } }), () => { console.log(this.state.body) });
+        this.setState(({ mail }) => ({ mail: { ...mail, body: target.innerText } }));
     }
 
     onSendMail = (ev) => {
