@@ -6,6 +6,7 @@
 @import url(./cmps/app-search.css);
 @import url(./cmps/user-msg.css);
 
+@import url(./apps/mail/mail-dashboard.css);
 @import url(./apps/mail/mail-preview.css);
 @import url(./apps/mail/mail-details.css);
 @import url(./apps/mail/mail-list-item.css);

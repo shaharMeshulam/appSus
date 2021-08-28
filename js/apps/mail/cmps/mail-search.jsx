@@ -154,8 +154,8 @@ export class MailSearch extends React.Component {
                                     <option value="draft">Draft</option>
                                 </select>
                             </li>
-                            <li>
-                                <button className="btn">Search</button>
+                            <li className="flex">
+                                <button className="btn btn-search">Search</button>
                             </li>
                         </ul>
                     )}

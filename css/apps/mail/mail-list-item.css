@@ -2,6 +2,7 @@
     background-color: rgba(242,245,245,0.8);
     border-bottom: 1px solid rgb(128, 128, 128);
     height: 45px;
+    padding-inline-end: 10px;
 }
 
 .mail-list-item:first-child {
@@ -27,4 +28,10 @@
     white-space: nowrap;
     overflow: hidden;
     margin-inline-end: 15px;
+}
+
+@media screen and (max-width:769px) { 
+    .mail-list-item-preview {
+        flex-wrap: wrap;
+    }
 }

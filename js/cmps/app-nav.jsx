@@ -5,6 +5,10 @@ export class AppNav extends React.Component {
         isExpended: false
     }
 
+    componentDidMount() {
+        console.log('props', this.props);
+    }
+
     toggleExpended = () => {
         this.setState(({ isExpended }) => ({ isExpended: !isExpended }), () => {
             if (this.state.isExpended) window.addEventListener('click', this.handleWindowClick);
@@ -24,14 +28,14 @@ export class AppNav extends React.Component {
     render() {
         const { isExpended } = this.state;
         return (
-            <nav className="app-nav">
+            <nav className="app-nav flex">
                 <span className="material-icons-outlined" onClick={this.toggleExpended}>
                     apps
                 </span>
                 {isExpended && (
                     <ul className="app-nav-nav flex">
                         <li>
-                            <NavLink className="flex direction-column" to="/" onClick={this.toggleExpended}>
+                            <NavLink className="flex direction-column align-center" to="/" onClick={this.toggleExpended}>
                                 <span className="material-icons-outlined">
                                     home
                                 </span>
@@ -39,7 +43,7 @@ export class AppNav extends React.Component {
                             </NavLink>
                         </li>
                         <li>
-                            <NavLink className="flex direction-column" to="/mail#inbox" onClick={this.toggleExpended}>
+                            <NavLink className="flex direction-column align-center" to="/mail#inbox" onClick={this.toggleExpended}>
                                 <span className="material-icons-outlined">
                                     email
                                 </span>
@@ -47,7 +51,7 @@ export class AppNav extends React.Component {
                             </NavLink>
                         </li>
                         <li>
-                            <NavLink className="flex direction-column" to="/keep" onClick={this.toggleExpended}>
+                            <NavLink className="flex direction-column align-center" to="/keep" onClick={this.toggleExpended}>
                                 <span className="material-icons-outlined">
                                     description
                                 </span>
@@ -55,7 +59,7 @@ export class AppNav extends React.Component {
                             </NavLink>
                         </li>
                         <li>
-                            <NavLink className="flex direction-column" to="/book" onClick={this.toggleExpended}>
+                            <NavLink className="flex direction-column align-center" to="/book" onClick={this.toggleExpended}>
                                 <span className="material-icons-outlined">
                                     menu_book
                                 </span>
@@ -63,7 +67,7 @@ export class AppNav extends React.Component {
                             </NavLink>
                         </li>
                         <li>
-                            <NavLink className="flex direction-column" to="/about" onClick={this.toggleExpended}>
+                            <NavLink className="flex direction-column align-center" to="/about" onClick={this.toggleExpended}>
                                 <span className="material-icons-outlined">
                                     info
                                 </span>

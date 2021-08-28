@@ -12,8 +12,17 @@ export function MailNav({ onEditNewMail, isReadPersentage }) {
         eventBusService.emit('search', criteria);
     }
 
+    const hideMenu = () => {
+        document.body.classList.remove('menu-open');
+    }
+
     return (
         <nav className="mail-nav flex direction-column">
+            <button className="btn btn-close flex" onClick={hideMenu}>
+                <span className="material-icons-outlined">
+                    close
+                </span>
+            </button>
             <div className="mail-nav-item flex justify-center" onClick={onEditNewMail}>
                 <p className="mail-nav-item-compose flex align-center" >
                     <span className="material-icons-outlined">
@@ -78,7 +87,7 @@ export function MailNav({ onEditNewMail, isReadPersentage }) {
                 </span>
                 <span>All</span>
             </NavLink>
-            <MailIsreadPersentage isReadPersentage={isReadPersentage}/>
+            <MailIsreadPersentage isReadPersentage={isReadPersentage} />
         </nav>
     )
 }

@@ -2,6 +2,11 @@
     flex-basis: 150px;
     margin-right: 15px;
     min-width: 150px;
+    background-color: #fff;
+}
+
+.mail-nav .btn-close {
+    display: none;
 }
 
 .mail-nav-item {
@@ -18,7 +23,7 @@
     color: #d93025;
 }
 
-.mail-nav-item:hover:not(.active)  {
+.mail-nav-item:hover:not(.active):not(:first-child)  {
     background-color: #f1f3f4;
 }
 
@@ -35,4 +40,20 @@
 
 .mail-nav-item-compose:hover {
     box-shadow: 1px 3px 0 rgb(60 64 67 / 30%), 0 4px 8px 3px rgb(60 64 67 / 15%)
+}
+
+@media screen and (max-width:769px) {
+    .mail-nav {
+        position: fixed;
+        transform: translateX(-100%);
+        transition: transform 0.6s;
+    }
+
+    .menu-open .mail-nav {
+        transform: translateX(0);
+    }
+
+    .mail-nav .btn-close {
+        display: flex;
+    }
 }
