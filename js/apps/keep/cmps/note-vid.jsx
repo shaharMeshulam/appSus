@@ -8,6 +8,8 @@ export function NoteVid({ params }) {
         onMouseEnter,
         onMouseLeave,
         setTarget,
+        getIsEditMode,
+        toggleEditMode,
         onAddField } = params
 
     const setEl = ({ target }) => {
@@ -20,7 +22,13 @@ export function NoteVid({ params }) {
             className="vid-note note remove-txt-marker"
             onMouseEnter={onMouseEnter}
             onMouseLeave={onMouseLeave}>
-            <iframe className="note-vid note" src={note.info.url}></iframe>
+            {note.info.url && !getIsEditMode && <iframe className="note-vid note" src={note.info.url}></iframe>}
+            {note.info.url && getIsEditMode && <p
+                onBlur={() => { updateNote('url') }}
+                onClick={setEl}
+                contentEditable={true}
+                suppressContentEditableWarning={true}>
+                {note.info.url} </p>}
             {note.info.title && <h1 suppressContentEditableWarning={true} contentEditable={true}>{note.info.title}</h1>}
             {!note.info.title && <span
                 title="Add title" onClick={() => { onAddField('title') }}
@@ -28,8 +36,8 @@ export function NoteVid({ params }) {
                 add_circle
             </span>}
             {note.info.txt &&
-                <h1 suppressContentEditableWarning={true}
-                    contentEditable={true}>{note.info.txt}</h1>}
+                <p suppressContentEditableWarning={true}
+                    contentEditable={true}>{note.info.txt}</p>}
             {
                 !note.info.txt && <span
                     title="Add text" onClick={() => { onAddField('txt') }}
@@ -37,7 +45,7 @@ export function NoteVid({ params }) {
                     add_circle
                 </span>
             }
-            {<NoteAction note={note} loadNotes={loadNotes} getShowActions={getShowActions} />}
+            {<NoteAction note={note} loadNotes={loadNotes} getShowActions={getShowActions} toggleEditMode={toggleEditMode} />}
         </li >
     )
 }

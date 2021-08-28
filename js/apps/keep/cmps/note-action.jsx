@@ -54,6 +54,11 @@ class _NoteAction extends React.Component {
         this.props.history.push(`/mail/new?subject=${(title) ? title : ''}&body=${(url) ? url : ''}${(txt) ? txt : ''}&isHtml=${type === 'note-img' || type === 'note-vid'}#sent`)
     }
 
+    onAddTodo = () => {
+        noteService.addTask(this.state.note.id)
+        this.props.loadNotes()
+    }
+
     render() {
         const { showPallete, note } = this.state
 
@@ -76,7 +81,7 @@ class _NoteAction extends React.Component {
                 <span title="Send as email" onClick={this.onEmailClick} className="material-icons-outlined clickable">
                     email
                 </span>
-                {note.type === 'note-todos' && <span title="Add task" className="material-icons-outlined clickable">
+                {note.type === 'note-todos' && <span onClick={this.onAddTodo} title="Add task" className="material-icons-outlined clickable">
                     add_task
                 </span>}
                 {(note.type === 'note-vid' || note.type === 'note-img') && <span onClick={this.props.toggleEditMode} className="material-icons clickable">

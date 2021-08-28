@@ -39,3 +39,7 @@
 .note .remove-todo-btn {
     color: #dc3545;
 }
+
+.todo-container p {
+    width: 70%;
+}

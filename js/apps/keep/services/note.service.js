@@ -11,7 +11,8 @@ export const noteService = {
     duplicateNote,
     toggleDoneTask,
     removeTask,
-    addField
+    addField,
+    addTask
 }
 
 import { utilService } from "../../../services/util.service.js";
@@ -32,7 +33,6 @@ function getNotesToShow(filterBy) {
                     note.info.title.toLowerCase().includes(search) || (!note.info.title && !note.info.txt && !search)
             }
             return note.type.includes(filterBy.type) && includesSearch
-
         }
     )
     return Promise.resolve(notes)
@@ -43,6 +43,15 @@ function toggleDoneTask(noteId, taskIdx) {
         note => {
             note.info.todos[taskIdx].isDone = !note.info.todos[taskIdx].isDone
             _saveNotes()
+        }
+    )
+}
+
+function addTask(noteId) {
+    getNoteById(noteId).then(
+        note => {
+            note.info.todos.push({ txt: '', isDone: false })
+            _saveNotes
         }
     )
 }
@@ -152,31 +161,189 @@ function _loadNotes() {
 
 let gNotes = _loadNotes() || [
     {
-        id: "n101",
-        type: "note-txt",
-        isPinned: true,
-        info: { txt: "Fullstack Me Baby!" }
-    }, {
-        id: "n102",
-        type: "note-txt",
-        isPinned: true,
-        info: { txt: "Fullstack Medasdasd Baby!" }
-    },
-    {
-        id: "n112302",
-        type: "note-img",
-        info: {
-            url: "https://i.stack.imgur.com/Op6dK.png",
-            title: "Bobi and Me"
+        "id": "n101",
+        "type": "note-txt",
+        "isPinned": true,
+        "info": {
+            "txt": "Fullstack Me Baby!",
+            "title": "FullOn"
         },
-        style: { backgroundColor: "#D3D3D3" }
+        "style": {
+            "backgroundColor": "#FF7F50"
+        }
     },
     {
-        id: "n103",
-        type: "note-todos",
-        info: {
-            label: "Get my stuff together",
-            todos: [{ txt: "Driving liscence", isDone: false }, { txt: "Coding power", isDone: true }]
+        "id": "n102",
+        "type": "note-txt",
+        "isPinned": true,
+        "info": {
+            "txt": "l",
+            "title": "d"
+        },
+        "style": {
+            "backgroundColor": "#40E0D0"
         }
+    },
+    {
+        "id": "n112302",
+        "type": "note-img",
+        "info": {
+            "url": "https://i.stack.imgur.com/Op6dK.png",
+            "title": "Bobi and Me",
+            "txt": "asdasdasd"
+        },
+        "style": {
+            "backgroundColor": "#9FE2BF"
+        },
+        "isPinned": false
+    },
+    {
+        "id": "n103",
+        "type": "note-todos",
+        "info": {
+            "label": "Get my stuff together",
+            "todos": [
+                {
+                    "txt": "Driving liscencedasdasdasdasdasdasdasdasd",
+                    "isDone": false
+                },
+                {
+                    "txt": "Coding power",
+                    "isDone": true
+                },
+                {
+                    "txt": "ddgf",
+                    "isDone": true
+                }
+            ],
+            "title": "dasdasfa"
+        },
+        "isPinned": true,
+        "style": {
+            "backgroundColor": "#DFFF00"
+        }
+    },
+    {
+        "type": "note-img",
+        "isPinned": false,
+        "info": {
+            "txt": "",
+            "url": "https://picsum.photos/200/300",
+            "todos": "",
+            "title": "LoremPicsum"
+        },
+        "style": {
+            "backgroundColor": "#FF7F50"
+        },
+        "id": "udmd0Qc6"
+    },
+    {
+        "type": "note-vid",
+        "isPinned": false,
+        "info": {
+            "txt": "",
+            "url": "https://www.youtube.com/embed/xiJlAE2sfQc",
+            "todos": "",
+            "title": " "
+        },
+        "style": {
+            "backgroundColor": "#FFBF00"
+        },
+        "id": "ecAxmglp"
+    },
+    {
+        "type": "note-vid",
+        "isPinned": true,
+        "info": {
+            "txt": " ",
+            "url": "https://www.youtube.com/embed/xiJlAE2sfQc",
+            "todos": "",
+            "title": " "
+        },
+        "style": {
+            "backgroundColor": "#9FE2BF"
+        },
+        "id": "W1qCsqXb"
+    },
+    {
+        "id": "Y0GDP4t2",
+        "type": "note-txt",
+        "isPinned": true,
+        "info": {
+            "txt": "Fullstack Me Baby!",
+            "title": "FullOn"
+        },
+        "style": {
+            "backgroundColor": "#FF7F50"
+        }
+    },
+    {
+        "id": "YtQNssKI",
+        "type": "note-img",
+        "info": {
+            "url": "https://i.stack.imgur.com/Op6dK.png",
+            "title": "Bobi and Me",
+            "txt": "asdasdasd"
+        },
+        "style": {
+            "backgroundColor": "#9FE2BF"
+        },
+        "isPinned": true
+    },
+    {
+        "id": "5SezG4W4",
+        "type": "note-img",
+        "info": {
+            "url": "https://i.stack.imgur.com/Op6dK.png",
+            "title": "Bobi and Me",
+            "txt": "asdasdasd"
+        },
+        "style": {
+            "backgroundColor": "#9FE2BF"
+        },
+        "isPinned": false
+    },
+    {
+        "type": "note-todos",
+        "isPinned": false,
+        "info": {
+            "txt": "",
+            "url": "",
+            "todos": [
+                {
+                    "txt": "list1",
+                    "isDone": false
+                },
+                {
+                    "txt": "list1",
+                    "isDone": false
+                },
+                {
+                    "txt": "list1",
+                    "isDone": true
+                },
+                {
+                    "txt": "list1",
+                    "isDone": false
+                },
+                {
+                    "txt": "list1",
+                    "isDone": true
+                },
+                {
+                    "txt": "list1",
+                    "isDone": false
+                },
+                {
+                    "txt": "list1",
+                    "isDone": true
+                }
+            ],
+            "title": "more list"
+        },
+        "style": {
+            "backgroundColor": "#6495ED"
+        },
+        "id": "VNkX3YjU"
     }
-];
+]
