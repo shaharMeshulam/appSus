@@ -40,7 +40,6 @@ function init() {
 }
 
 function getMailsToDisplay(criteria) {
-    console.log('criteria:', criteria)
     const status = criteria.status || null;
     const isStared = criteria.isStared || null
     const txt = criteria.txt || null;

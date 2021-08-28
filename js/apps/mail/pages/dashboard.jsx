@@ -118,11 +118,20 @@ export class _DashBoard extends React.Component {
         this.getMailsForDisplay(criteria);
     }
 
+    onShowMailNav = () => {
+        document.body.classList.add('menu-open');
+    }
+
     render() {
         const { isEditNewMail, mail, mails, type, isShowTrash, isReadPersentage } = this.state;
         return (
             <React.Fragment>
                 <div className="main-container flex">
+                    <button className="btn btn-hamburger">
+                        <span className="material-icons-outlined" onClick={this.onShowMailNav}>
+                            menu
+                        </span>
+                    </button>
                     <MailNav onEditNewMail={this.onEditNewMail} isReadPersentage={isReadPersentage} />
                     <Switch>
                         <Route exact path="/mail/new" component={NewMail} />

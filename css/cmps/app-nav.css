@@ -14,6 +14,7 @@
     top: 0;
     right: 50px;
     background-color: #fff;
+    z-index: 1;
 }
 
 .app-nav-nav li {
@@ -23,4 +24,12 @@
 .app-nav-nav li a {
     color: inherit;
     text-decoration: none;
+}
+
+@media screen and (max-width:769px) { 
+    .app-nav-nav {
+        top: unset;
+        bottom: -179px;
+        right: -85px;
+    }
 }
