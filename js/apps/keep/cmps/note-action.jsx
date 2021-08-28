@@ -51,7 +51,7 @@ class _NoteAction extends React.Component {
             if (type === 'note-img') url = `<img src="${url}"/>`
             else url = `<iframe src="${note.url}"></iframe>`
         }
-        this.props.history.push(`/mail/new?subject=${(title) ? title : ''}&body=${(url) ? url : ''}${(txt) ? txt : ''}&isHtml=${type === 'note-img' || type === 'note-vid'}`)
+        this.props.history.push(`/mail/new?subject=${(title) ? title : ''}&body=${(url) ? url : ''}${(txt) ? txt : ''}&isHtml=${type === 'note-img' || type === 'note-vid'}#sent`)
     }
 
     render() {
