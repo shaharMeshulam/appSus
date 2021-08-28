@@ -5,24 +5,8 @@ export class AppNav extends React.Component {
         isExpended: false
     }
 
-    componentDidMount() {
-        console.log('props', this.props);
-    }
-
     toggleExpended = () => {
-        this.setState(({ isExpended }) => ({ isExpended: !isExpended }), () => {
-            if (this.state.isExpended) window.addEventListener('click', this.handleWindowClick);
-            else window.removeEventListener('click', this.handleWindowClick);
-        });
-    }
-
-    componentWillUnmount() {
-        window.removeEventListener('click', this.handleWindowClick);
-    }
-
-    handleWindowClick = (ev) => {
-        console.log(ev.target);
-        console.log(ev.currentTarget);
+        this.setState(({ isExpended }) => ({ isExpended: !isExpended }));
     }
 
     render() {
