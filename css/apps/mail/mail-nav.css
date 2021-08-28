@@ -31,7 +31,7 @@
     background-color: #f1f3f4;
 }
 
-.mail-nav-item:first-of-type:hover {
+.mail-nav-item:nth-child(2):hover {
     background-color: #fff !important;
 }
 
@@ -39,9 +39,6 @@
     margin-right: 15px;
 }
 
-.mail-nav-item {
-    
-}
 
 .mail-nav-item-compose {
     padding: 10px 15px; 
