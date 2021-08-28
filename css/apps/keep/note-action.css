@@ -1,7 +1,12 @@
 .note-action {
     position: relative;
 }
-.note-action-placeholder{
-    height: 28px;
-    width: 100%;
+
+.note-action span {
+    margin: 3px;
+}
+
+.note-action span:hover {
+    transform: scale(115%);
+    transition: transform .3s;
 }

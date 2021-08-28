@@ -9,7 +9,8 @@ export function NoteTxt({ params }) {
         onMouseEnter,
         onMouseLeave,
         setTarget,
-        updateNote } = params
+        updateNote,
+        onAddField } = params
 
 
     const setEl = ({ target }) => {
@@ -26,7 +27,7 @@ export function NoteTxt({ params }) {
                     onClick={setEl}
                     suppressContentEditableWarning={true}
                     contentEditable={true}>{note.info.title}</h1>}
-            {!note.info.title && <span title="Add title" onClick={() => { addField('title') }}
+            {!note.info.title && <span title="Add title" onClick={() => { onAddField('title') }}
                 className={`material-icons-outlined clickable ${(getShowActions) ? 'show' : 'hide'}`}>
                 add_circle
             </span>}
@@ -35,7 +36,7 @@ export function NoteTxt({ params }) {
                     onClick={setEl}
                     contentEditable={true}
                     suppressContentEditableWarning={true}>{note.info.txt}</p>}
-            {!note.info.txt && <span title="Add text" onClick={() => { addField('txt') }}
+            {!note.info.txt && <span title="Add text" onClick={() => { onAddField('txt') }}
                 className={`material-icons-outlined clickable ${(getShowActions) ? 'show' : 'hide'}`}>
                 add_circle
             </span>}

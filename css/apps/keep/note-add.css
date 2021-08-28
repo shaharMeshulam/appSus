@@ -1,7 +1,9 @@
 .add-note {
     display: grid;
     grid-template-areas: "title type" ". type" "button button";
-    gap:5px ;
+    gap: 5px;
+    width: 60vw;
+    margin: auto;
 }
 
 .add-note input[name=title] {
@@ -16,6 +18,7 @@
     grid-area: type;
     align-self: center;
 }
-.add-note button{
+
+.add-note button {
     grid-area: button;
 }

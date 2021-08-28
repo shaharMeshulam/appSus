@@ -5,6 +5,7 @@ import { DinamicNote } from './dinamic-note.jsx'
 export function NoteList({ notes, loadNotes }) {
     return (
         <section className="notes-list">
+            <h1>Pinned Notes</h1>
             <ul className="pinned-notes">
                 {notes.map(note => {
                     if (note.isPinned) {
@@ -12,6 +13,7 @@ export function NoteList({ notes, loadNotes }) {
                     }
                 })}
             </ul>
+            <h1>Unpinned Notes</h1>
             <ul className="unpinned-notes">
                 {notes.map(note => {
                     if (!note.isPinned) {

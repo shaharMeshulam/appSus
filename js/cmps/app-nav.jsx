@@ -16,11 +16,6 @@ export class AppNav extends React.Component {
         window.removeEventListener('click', this.handleWindowClick);
     }
 
-    handleWindowClick = (ev) => {
-        console.log(ev.target);
-        console.log(ev.currentTarget);
-    }
-
     render() {
         const { isExpended } = this.state;
         return (

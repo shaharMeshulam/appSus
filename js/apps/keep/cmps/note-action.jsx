@@ -60,32 +60,30 @@ class _NoteAction extends React.Component {
         if (!note) return <React.Fragment></React.Fragment>
         return (
             <section className={`remove-txt-marker note-action ${(this.props.getShowActions) ? 'show' : 'hide'} `} onClick={(ev) => { ev.stopPropagation() }}>
-                <span onClick={this.onPinNote} className={`clickable material-icons${(note.isPinned) ? '' : '-outlined'}`}>
+                <span title="Pin note" onClick={this.onPinNote} className={`clickable material-icons${(note.isPinned) ? '' : '-outlined'}`}>
                     push_pin
                 </span>
                 {showPallete && <ColorPallete onChangeColor={this.onChangeColor} hideColorPallete={this.hideColorPallete} />}
                 <span onMouseEnter={this.showColorPallete} className="clickable material-icons-outlined" >
                     color_lens
                 </span>
-                <span onClick={this.onDeleteBook} className="clickable material-icons-outlined">
+                <span title="Remove note" onClick={this.onDeleteBook} className="clickable material-icons-outlined">
                     delete
                 </span>
                 <span title="Duplicate note" onClick={this.onDuplicateNote} className="clickable material-icons-outlined">
                     content_copy
                 </span>
-                <span title="Send as email" onClick={this.onEmailClick} className="material-icons-outlined">
+                <span title="Send as email" onClick={this.onEmailClick} className="material-icons-outlined clickable">
                     email
                 </span>
                 {note.type === 'note-todos' && <span title="Add task" className="material-icons-outlined clickable">
                     add_task
                 </span>}
-                {(note.type === 'note-vid' || note.type === 'note-img') && <span className="material-icons clickable">
+                {(note.type === 'note-vid' || note.type === 'note-img') && <span onClick={this.props.toggleEditMode} className="material-icons clickable">
                     edit
                 </span>}
             </section>
         )
-
-
     }
 }
 

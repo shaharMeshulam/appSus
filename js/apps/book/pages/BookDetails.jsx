@@ -1,7 +1,7 @@
 import { utilService } from '../../../services/util.service.js'
-import { bookService } from '../../../services/books-service.js'
-import { LongTxt } from '../LongTxt.jsx'
-import { ReviewList } from '../ReviewList.jsx'
+import { bookService } from '../../book/service/books-service.js'
+import { LongTxt } from '../cmps/LongTxt.jsx'
+import { ReviewList } from '../cmps/ReviewList.jsx'
 
 const { Link } = ReactRouterDOM
 export class BookDetails extends React.Component {

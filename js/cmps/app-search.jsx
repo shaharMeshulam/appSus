@@ -1,4 +1,6 @@
+import { NoteFilter } from "../apps/keep/cmps/note-filter.jsx";
 import { MailSearch } from "../apps/mail/cmps/mail-search.jsx";
+const { Switch, Route } = ReactRouterDOM
 
 export class AppSearch extends React.Component {
     state = {
@@ -15,7 +17,10 @@ export class AppSearch extends React.Component {
 
     render() {
         return (
-            <MailSearch display={this.checkIfRouteIncludes('mail')} />
+            <Switch>
+                <Route path="/keep" component={NoteFilter} />
+                <MailSearch display={this.checkIfRouteIncludes('mail')} />
+            </Switch>
         )
     }
 }

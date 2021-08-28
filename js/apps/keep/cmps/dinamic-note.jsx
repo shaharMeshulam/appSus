@@ -26,16 +26,26 @@ export class DinamicNote extends React.Component {
         })
     }
 
-    // onAddField = () => { }
+    onAddField = (field) => {
+        noteService.addField(this.props.note.id, field, ' ')
+        this.props.loadNotes()
+    }
+
+    toggleEditMode = () => {
+        this.setState(prevState => ({ isEditMode: !prevState.isEditMode }), () => {
+        })
+    }
+
+    onAddTodo = () => { }
     setTarget = (target) => { this.setState({ target }) }
     onMouseEnter = () => { this.setState({ showActions: true }) }
-    onMouseLeave = () => { this.setState({ showActions: false, isEditMode: false }) }
+    onMouseLeave = () => { this.setState({ showActions: false }) }
     get getShowActions() { return this.state.showActions }
     get getIsEditMode() { return this.state.isEditMode }
     get getTarget() { return this.state.target }
     updateNote = (field, todoIdx) => {
         noteService.updateNote(this.props.note.id, this.getTarget.innerText, field || this.getField, todoIdx)
-        loadNotes()
+        this.props.loadNotes()
     }
 
     get getField() {
@@ -61,6 +71,8 @@ export class DinamicNote extends React.Component {
         params.onMouseLeave = this.onMouseLeave
         params.setTarget = this.setTarget
         params.updateNote = this.updateNote
+        params.toggleEditMode = this.toggleEditMode
+        params.onAddField = this.onAddField
 
 
         if (!note) return <React.Fragment></React.Fragment>

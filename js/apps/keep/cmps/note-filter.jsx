@@ -1,35 +1,58 @@
+import { eventBusService } from '../../../services/event-bus-service.js'
+
 export class NoteFilter extends React.Component {
     state = {
         type: '',
-        search: ''
+        txt: '',
+        showFilter: null
     }
 
     componentDidMount() {
-        this.setState({ type: '', search: '' })
+        this.setState({ type: '', txt: '', showFilter: false })
+    }
+
+    onToggleFilter = () => {
+        this.setState(({ showFilter }) => ({ showFilter: !showFilter }));
+    }
+
+    onSearch = (ev) => {
+        ev.preventDefault()
+        const { txt, type } = this.state
+        this.setState({ showFilter: false })
+        eventBusService.emit('note-search', { search: txt, type })
     }
 
     handleChange = ({ target }) => {
-        const field = target.name
-        this.setState({ [field]: target.value }, () => {
-            const { type, search } = this.state
-            this.props.setFilterBy({ type, search })
-        })
+        this.setState({ txt: target.value })
     }
 
+    setType = (type) => { this.setState({ type }) }
+
     render() {
-        const { type, search } = this.state
+        const { type, txt, showFilter } = this.state
 
         return (
-            <section className="filter">
-                <input value={search} onChange={this.handleChange} name="search" type="text" placeholder="Search" />
-                <select value={type} onChange={this.handleChange} name="type">
-                    <option value="">Show All</option>
-                    <option value="note-vid">Video</option>
-                    <option value="note-txt">Text</option>
-                    <option value="note-todos">Todos</option>
-                    <option value="note-img">Image</option>
-                </select>
-            </section>
+            <form className="app-search" onSubmit={this.onSearch}>
+                <label htmlFor="search" className="flex align-center">
+                    <span className="btn material-icons-outlined" onClick={this.onToggleFilter}>
+                        tune
+                    </span>
+                    <input type="search" name="txt" id="search" onChange={this.handleChange} value={txt} />
+                    <span className="btn search-icon material-icons-outlined" onClick={this.onSearch}>
+                        search
+                    </span>
+                    {showFilter && (
+                        <div onMouseLeave={this.onToggleFilter} className="app-search-criteria flex direction-column">
+                            <button onClick={() => { this.setType('') }} className="clickable">All</button>
+                            <button onClick={() => { this.setType('note-vid') }} className="clickable">Video</button>
+                            <button onClick={() => { this.setType('note-txt') }} className="clickable">Text</button>
+                            <button onClick={() => { this.setType('note-todos') }} className="clickable">Todos</button>
+                            <button onClick={() => { this.setType('note-img') }} className="clickable">Image</button>
+                        </div>
+                    )}
+                </label>
+            </form>
         )
     }
 }
+

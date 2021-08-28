@@ -24,7 +24,7 @@ class _AppHeader extends React.Component {
     return (
       <header className="app-header flex justify-between clickable">
         <h2><NavLink to="/">AppSus</NavLink></h2>
-        <AppSearch route={route}/>
+        <AppSearch route={route} />
         <AppNav />
       </header>
     )

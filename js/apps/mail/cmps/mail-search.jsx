@@ -29,9 +29,9 @@ export class MailSearch extends React.Component {
     }
 
     componentDidUpdate(prevProps, prevState) {
-        if(prevProps.display !== this.props.display) this.setState({display: this.props.display});
+        if (prevProps.display !== this.props.display) this.setState({ display: this.props.display });
     }
-    
+
 
     componentWillUnmount() {
         this.removeEventBus();

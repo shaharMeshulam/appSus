@@ -9,7 +9,8 @@ export function NoteTodos({ params }) {
         onMouseEnter,
         onMouseLeave,
         setTarget,
-        updateNote } = params
+        updateNote,
+        onAddField } = params
 
     const setEl = ({ target }) => {
         setTarget(target)
@@ -41,7 +42,7 @@ export function NoteTodos({ params }) {
                     suppressContentEditableWarning={true}
                     className="note-title">{note.info.title}
                 </h1>}
-            {!note.info.title && <span title="Add title" onClick={() => { addField('title') }}
+            {!note.info.title && <span title="Add title" onClick={() => { onAddField('title') }}
                 className={`material-icons-outlined clickable ${(getShowActions) ? 'show' : 'hide'}`}>
                 add_circle
             </span>}
@@ -57,10 +58,14 @@ export function NoteTodos({ params }) {
                                 {todo.txt}
                             </p>
                             <div className="actions">
-                                <span onClick={() => { onToggleDoneTask(idx) }} className="material-icons-outlined clickable">
+                                <span title="Done/Undone "
+                                    onClick={() => { onToggleDoneTask(idx) }}
+                                    className={`material-icons-outlined clickable toggle-done-todo-btn ${(getShowActions) ? 'show' : 'hide'}`}>
                                     rule
                                 </span>
-                                <span onClick={() => { onRemoveTask(idx) }} className="material-icons-outlined clickable">
+                                <span title="Remove task"
+                                    onClick={() => { onRemoveTask(idx) }}
+                                    className={`material-icons-outlined clickable remove-todo-btn ${(getShowActions) ? 'show' : 'hide'}`}>
                                     remove_circle
                                 </span>
                             </div>

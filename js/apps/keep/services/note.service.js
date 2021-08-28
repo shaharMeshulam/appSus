@@ -50,7 +50,6 @@ function toggleDoneTask(noteId, taskIdx) {
 function removeTask(noteId, taskIdx) {
     getNoteById(noteId).then(
         note => {
-            console.log(gNotes);
             note.info.todos.splice(taskIdx, 1)
             if (!note.info.todos.length) removeNote(noteId)
             _saveNotes()
@@ -67,9 +66,7 @@ function addNote(note) {
     for (const key in note.info) {
         if (note.info[key]) {
             note.id = utilService.makeId(8)
-            console.log(note);
             gNotes.push(note)
-            console.log(gNotes);
             _saveNotes()
             return
         }
@@ -112,6 +109,9 @@ function updateNote(noteId, content, field, todoIdx) {
                 return
             }
             note.info[field] = content || ''
+            if (!note.info.txt && !note.info.title && !note.info.url) {
+                removeNote(noteId)
+            }
             _saveNotes()
         }
     )
@@ -121,8 +121,6 @@ function addField(noteId, field, content) {
     getNoteById(noteId)
         .then(note => {
             note.info[field] = content
-            console.log(note);
-            console.log(gNotes);
             _saveNotes
         })
 }

@@ -31,3 +31,11 @@
 .note p.done {
     text-decoration: line-through;
 }
+
+.note .toggle-done-todo-btn {
+    color: #198754;
+}
+
+.note .remove-todo-btn {
+    color: #dc3545;
+}
