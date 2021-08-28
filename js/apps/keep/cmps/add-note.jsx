@@ -63,6 +63,7 @@ export class NoteAdd extends React.Component {
 
     render() {
         const { title } = this.state.info
+        const { type } = this.state
 
         return (
             <section className="add-note">
@@ -71,16 +72,16 @@ export class NoteAdd extends React.Component {
                 <button className="clickable" onClick={this.onAddNote}>Add Note</button>
 
                 <div className="note-type">
-                    <span onClick={() => { this.onSetNoteType('note-vid') }} className="clickable material-icons-outlined">
+                    <span onClick={() => { this.onSetNoteType('note-vid') }} className={`clickable material-icons-outlined ${(type === 'note-vid') ? 'active' : ''}`}>
                         movie
                     </span>
-                    <span onClick={() => { this.onSetNoteType('note-img') }} className="clickable material-icons-outlined">
+                    <span onClick={() => { this.onSetNoteType('note-img') }} className={`clickable material-icons-outlined ${(type === 'note-img') ? 'active' : ''}`}>
                         image
                     </span>
-                    <span onClick={() => { this.onSetNoteType('note-todos') }} className="clickable material-icons-outlined">
+                    <span onClick={() => { this.onSetNoteType('note-todos') }} className={`clickable material-icons-outlined ${(type === 'note-todos') ? 'active' : ''}`}>
                         format_list_bulleted
                     </span>
-                    <span onClick={() => { this.onSetNoteType('note-txt') }} className="clickable material-icons-outlined">
+                    <span onClick={() => { this.onSetNoteType('note-txt') }} className={`clickable material-icons-outlined ${(type === 'note-txt') ? 'active' : ''}`}>
                         format_color_text
                     </span>
                 </div>

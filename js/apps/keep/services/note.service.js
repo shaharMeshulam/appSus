@@ -105,6 +105,7 @@ function setColor(note, color) {
 }
 
 function updateNote(noteId, content, field, todoIdx) {
+    debugger
     getNoteById(noteId).then(
         note => {
             if (todoIdx || todoIdx === 0) {

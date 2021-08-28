@@ -10,7 +10,8 @@ export function NoteVid({ params }) {
         setTarget,
         getIsEditMode,
         toggleEditMode,
-        onAddField } = params
+        onAddField,
+        updateNote } = params
 
     const setEl = ({ target }) => {
         setTarget(target)
@@ -29,14 +30,21 @@ export function NoteVid({ params }) {
                 contentEditable={true}
                 suppressContentEditableWarning={true}>
                 {note.info.url} </p>}
-            {note.info.title && <h1 suppressContentEditableWarning={true} contentEditable={true}>{note.info.title}</h1>}
+            {note.info.title && <h1
+                onBlur={() => { updateNote('title') }}
+                onClick={setEl}
+                suppressContentEditableWarning={true}
+                contentEditable={true}>{note.info.title}</h1>}
             {!note.info.title && <span
                 title="Add title" onClick={() => { onAddField('title') }}
                 className={`material-icons-outlined clickable ${(getShowActions) ? 'show' : 'hide'}`}>
                 add_circle
             </span>}
             {note.info.txt &&
-                <p suppressContentEditableWarning={true}
+                <p
+                    onBlur={() => { updateNote('txt') }}
+                    onClick={setEl}
+                    suppressContentEditableWarning={true}
                     contentEditable={true}>{note.info.txt}</p>}
             {
                 !note.info.txt && <span

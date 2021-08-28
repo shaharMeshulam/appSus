@@ -29,11 +29,17 @@
 }
 
 .note-type>span {
-    font-size: 2.5rem
+    font-size: 2.5rem;
+    padding: 9px;
 }
 
 @media screen and (max-width:600px) {
     .note-type>span {
         font-size: 1.75rem
     }
+}
+
+.add-note span.active {
+    background-color: rgb(172, 172, 172);
+    border-radius: 50%;
 }

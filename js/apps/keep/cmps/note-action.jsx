@@ -64,7 +64,10 @@ class _NoteAction extends React.Component {
 
         if (!note) return <React.Fragment></React.Fragment>
         return (
-            <section className={`remove-txt-marker note-action ${(this.props.getShowActions) ? 'show' : 'hide'} `} onClick={(ev) => { ev.stopPropagation() }}>
+            <section
+                onMouseLeave={this.hideColorPallete}
+                className={`remove-txt-marker note-action ${(this.props.getShowActions) ? 'show' : 'hide'} `}
+                onClick={(ev) => { ev.stopPropagation() }}>
                 <span title="Pin note" onClick={this.onPinNote} className={`clickable material-icons${(note.isPinned) ? '' : '-outlined'}`}>
                     push_pin
                 </span>
