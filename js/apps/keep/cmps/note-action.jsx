@@ -1,7 +1,9 @@
 import { noteService } from "../services/note.service.js";
 import { ColorPallete } from "./color-pallete.jsx";
 
-export class NoteAction extends React.Component {
+const { withRouter } = ReactRouterDOM
+
+class _NoteAction extends React.Component {
     state = {
         showPallete: null,
         note: null
@@ -42,32 +44,49 @@ export class NoteAction extends React.Component {
         loadNotes()
     }
 
+    onEmailClick = () => {
+        let { title, txt, url } = this.state.note.info
+        const { type } = this.state.note
+        if (url) {
+            if (type === 'note-img') url = `<img src="${url}"/>`
+            else url = `<iframe src="${note.url}"></iframe>`
+        }
+        props.history.push(`/mail/new?subject=${title}&body=${(url) ? url : ''}${(txt) ? txt : ''}&isHtml${type === 'note-img' || type === 'note-vid'}`)
+    }
+
     render() {
         const { showPallete, note } = this.state
 
         if (!note) return <React.Fragment></React.Fragment>
         return (
-            <section className="note-action" onClick={(ev) => { ev.stopPropagation() }}>
-                <span onClick={this.onPinNote} className={`material-icons${(note.isPinned) ? '' : '-outlined'}`}>
+            <section className={`remove-txt-marker note-action ${(this.props.getShowActions) ? 'show' : 'hide'} `} onClick={(ev) => { ev.stopPropagation() }}>
+                <span onClick={this.onPinNote} className={`clickable material-icons${(note.isPinned) ? '' : '-outlined'}`}>
                     push_pin
                 </span>
                 {showPallete && <ColorPallete onChangeColor={this.onChangeColor} hideColorPallete={this.hideColorPallete} />}
-                <span onMouseEnter={this.showColorPallete} className="material-icons-outlined" >
+                <span onMouseEnter={this.showColorPallete} className="clickable material-icons-outlined" >
                     color_lens
                 </span>
-                <span onClick={this.onDeleteBook} className="material-icons-outlined">
+                <span onClick={this.onDeleteBook} className="clickable material-icons-outlined">
                     delete
                 </span>
-                <span className="material-icons">
-                    edit
-                </span>
-                <span onClick={this.onDuplicateNote} className="material-icons-outlined">
+                <span title="Duplicate note" onClick={this.onDuplicateNote} className="clickable material-icons-outlined">
                     content_copy
                 </span>
-
+                <span title="Send as email" className="material-icons-outlined">
+                    email
+                </span>
+                {note.type === 'note-todos' && <span title="Add task" className="material-icons-outlined clickable">
+                    add_task
+                </span>}
+                {(note.type === 'note-vid' || note.type === 'note-img') && <span className="material-icons clickable">
+                    edit
+                </span>}
             </section>
         )
 
 
     }
 }
+
+export const NoteAction = withRouter(_NoteAction)

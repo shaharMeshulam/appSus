@@ -1,11 +1,14 @@
 import { NoteAction } from "./note-action.jsx";
 
 export function NoteVid({ params }) {
-    const { note,
+    const {
+        note,
         loadNotes,
         getShowActions,
         onMouseEnter,
-        onMouseLeave } = params
+        onMouseLeave,
+        setTarget,
+        updateNote } = params
 
     const setEl = ({ target }) => {
         setTarget(target)
@@ -14,19 +17,27 @@ export function NoteVid({ params }) {
     return (
         <li
             style={{ backgroundColor: (note.style) ? note.style.backgroundColor : 'white' }}
-            className="vid-note note clickable"
+            className="vid-note note remove-txt-marker"
             onMouseEnter={onMouseEnter}
             onMouseLeave={onMouseLeave}>
-            {note.title && <h1 suppressContentEditableWarning={true} contentEditable={true}>{note.title}</h1>}
-            {!note.info.title && getShowActions && <span title="Add title" onClick={() => { addField('title') }} className="material-icons-outlined">
+            <iframe className="note-vid note" src={note.info.url}></iframe>
+            {note.info.title && <h1 suppressContentEditableWarning={true} contentEditable={true}>{note.info.title}</h1>}
+            {!note.info.title && <span
+                title="Add title" onClick={() => { addField('title') }}
+                className={`material-icons-outlined clickable ${(getShowActions) ? 'show' : 'hide'}`}>
                 add_circle
             </span>}
-            {note.txt && <h1 suppressContentEditableWarning={true} contentEditable={true}>{note.txt}</h1>}
-            {!note.info.txt && getShowActions && <span title="Add text" onClick={() => { addField('txt') }} className="material-icons-outlined">
-                add_circle
-            </span>}
-            {getShowActions && <NoteAction note={note} loadNotes={loadNotes} />}
-            {!getShowActions && <div className="note-action-placeholder"></div>}
+            {note.info.txt &&
+                <h1 suppressContentEditableWarning={true}
+                    contentEditable={true}>{note.info.txt}</h1>}
+            {
+                !note.info.txt && <span
+                    title="Add text" onClick={() => { addField('txt') }}
+                    className={`material-icons-outlined clickable ${(getShowActions) ? 'show' : 'hide'}`}>
+                    add_circle
+                </span>
+            }
+            {<NoteAction note={note} loadNotes={loadNotes} getShowActions={getShowActions} />}
         </li >
     )
 }

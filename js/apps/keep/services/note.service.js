@@ -2,19 +2,60 @@ import { storageService } from "../../../services/storage.service.js";
 
 export const noteService = {
     addNote,
-    getNotes,
+    getNotesToShow,
     removeNote,
     getNoteById,
     setColor,
     updateNote,
     togglePin,
-    duplicateNote
+    duplicateNote,
+    toggleDoneTask,
+    removeTask,
+    addField
 }
 
 import { utilService } from "../../../services/util.service.js";
 
-function getNotes() {
-    return Promise.resolve(gNotes)
+
+function getNotesToShow(filterBy) {
+    let { search } = filterBy
+    search = search.toLowerCase()
+    const notes = gNotes.filter(
+        note => {
+            let includesSearch;
+            if (note.type === 'note-todos') {
+                includesSearch = note.info.todos.some(todo => todo.txt.toLowerCase().includes(search))
+            } else {
+                includesSearch = note.info.txt &&
+                    note.info.txt.toLowerCase().includes(search) ||
+                    note.info.title &&
+                    note.info.title.toLowerCase().includes(search) || (!note.info.title && !note.info.txt && !search)
+            }
+            return note.type.includes(filterBy.type) && includesSearch
+
+        }
+    )
+    return Promise.resolve(notes)
+}
+
+function toggleDoneTask(noteId, taskIdx) {
+    getNoteById(noteId).then(
+        note => {
+            note.info.todos[taskIdx].isDone = !note.info.todos[taskIdx].isDone
+            _saveNotes()
+        }
+    )
+}
+
+function removeTask(noteId, taskIdx) {
+    getNoteById(noteId).then(
+        note => {
+            console.log(gNotes);
+            note.info.todos.splice(taskIdx, 1)
+            if (!note.info.todos.length) removeNote(noteId)
+            _saveNotes()
+        }
+    )
 }
 
 function addNote(note) {
@@ -22,11 +63,13 @@ function addNote(note) {
         note.info.todos = note.info.todos.split(',')
         note.info.todos = note.info.todos.map(todo => ({ txt: todo, isDone: false }))
     }
+    if (note.type === 'note-vid') note.info.url = getEmbedURL(note)
     for (const key in note.info) {
         if (note.info[key]) {
             note.id = utilService.makeId(8)
             console.log(note);
             gNotes.push(note)
+            console.log(gNotes);
             _saveNotes()
             return
         }
@@ -55,14 +98,43 @@ function setColor(note, color) {
     _saveNotes()
 }
 
-function updateNote(noteId, content, field) {
+function updateNote(noteId, content, field, todoIdx) {
     getNoteById(noteId).then(
         note => {
+            if (todoIdx || todoIdx === 0) {
+                if (!content) {
+                    note.info.todos.splice(todoIdx)
+                    _saveNotes()
+                    return
+                }
+                note.info.todos[todoIdx].txt = content
+                _saveNotes()
+                return
+            }
             note.info[field] = content || ''
             _saveNotes()
         }
     )
+}
 
+function addField(noteId, field, content) {
+    getNoteById(noteId)
+        .then(note => {
+            note.info[field] = content
+            console.log(note);
+            console.log(gNotes);
+            _saveNotes
+        })
+}
+
+function getEmbedURL(note) {
+    const youtubeEmbed = 'https://www.youtube.com/embed/'
+    const { url } = note.info
+    const vidIdIdx = url.indexOf('?v')
+    if (vidIdIdx !== -1) {
+        return youtubeEmbed + url.slice(vidIdIdx + 3)
+    }
+    return url
 }
 
 function duplicateNote(note) {

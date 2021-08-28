@@ -26,3 +26,7 @@
     cursor: pointer;
     user-select: none;
 }
+
+.remove-txt-marker {
+    user-select: none;
+}

@@ -2,6 +2,7 @@ import { NoteTxt } from './note-txt.jsx'
 import { NoteImg } from './note-img.jsx'
 import { NoteVid } from './note-vid.jsx'
 import { NoteTodos } from './note-todos.jsx'
+
 import { noteService } from '../services/note.service.js'
 
 export class DinamicNote extends React.Component {
@@ -10,7 +11,9 @@ export class DinamicNote extends React.Component {
         isEditMode: null,
         content: '',
         title: '',
-        target: null
+        target: null,
+        addTitle: null,
+        addTxt: null
     }
 
     componentWillMount() {
@@ -23,15 +26,16 @@ export class DinamicNote extends React.Component {
         })
     }
 
+    // onAddField = () => { }
     setTarget = (target) => { this.setState({ target }) }
     onMouseEnter = () => { this.setState({ showActions: true }) }
     onMouseLeave = () => { this.setState({ showActions: false, isEditMode: false }) }
     get getShowActions() { return this.state.showActions }
+    get getIsEditMode() { return this.state.isEditMode }
     get getTarget() { return this.state.target }
-    updateNote = (field) => {
-        debugger
-
-        noteService.updateNote(this.props.note.id, this.getTarget.innerText, field || this.getField)
+    updateNote = (field, todoIdx) => {
+        noteService.updateNote(this.props.note.id, this.getTarget.innerText, field || this.getField, todoIdx)
+        loadNotes()
     }
 
     get getField() {
@@ -42,8 +46,6 @@ export class DinamicNote extends React.Component {
             case 'note-vid':
             case 'note-img':
                 return 'url'
-            case 'note-todos':
-                return 'todos'
         }
     }
 
@@ -54,6 +56,7 @@ export class DinamicNote extends React.Component {
         params.note = note
         params.loadNotes = loadNotes
         params.getShowActions = this.getShowActions
+        params.getIsEditMode = this.getIsEditMode
         params.onMouseEnter = this.onMouseEnter
         params.onMouseLeave = this.onMouseLeave
         params.setTarget = this.setTarget

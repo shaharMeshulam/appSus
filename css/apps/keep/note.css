@@ -15,5 +15,19 @@
 }
 
 .note img {
-    width: 100%
+    width: 100%;
+}
+
+.note .show {
+    opacity: 1;
+    transition: opacity .2s;
+}
+
+.note .hide {
+    opacity: 0;
+    transition: opacity .2s;
+}
+
+.note p.done {
+    text-decoration: line-through;
 }

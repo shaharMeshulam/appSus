@@ -5,7 +5,7 @@ const { NavLink, withRouter } = ReactRouterDOM
 
 function _AppHeader() {
   return (
-    <header className="app-header flex justify-between">
+    <header className="app-header flex justify-between clickable">
       <h2><NavLink to="/">AppSus</NavLink></h2>
       <AppSearch />
       <AppNav/>

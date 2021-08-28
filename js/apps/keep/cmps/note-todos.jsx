@@ -1,34 +1,74 @@
+import { noteService } from "../services/note.service.js"
 import { NoteAction } from "./note-action.jsx"
 
 export function NoteTodos({ params }) {
-    const { note,
+    const {
+        note,
         loadNotes,
         getShowActions,
         onMouseEnter,
-        onMouseLeave } = params
+        onMouseLeave,
+        setTarget,
+        updateNote } = params
 
     const setEl = ({ target }) => {
         setTarget(target)
     }
 
+    const onToggleDoneTask = (taskIdx) => {
+        noteService.toggleDoneTask(note.id, taskIdx)
+        loadNotes()
+    }
+
+    const onRemoveTask = (taskIdx) => {
+        noteService.removeTask(note.id, taskIdx)
+        loadNotes()
+    }
+
+    if (!note.info.todos.length) return <React.Fragment></React.Fragment>
+
     return (
         <li
             style={{ backgroundColor: (note.style) ? note.style.backgroundColor : 'white' }}
-            className="todos-note note clickable"
+            className="todos-note note remove-txt-marker"
             onMouseEnter={onMouseEnter}
             onMouseLeave={onMouseLeave}>
-            {note.info.title && <h2 className="note-title">{note.info.title}</h2>}
+            {note.info.title &&
+                <h1
+                    onBlur={() => { updateNote('title') }}
+                    onClick={setEl}
+                    contentEditable={true}
+                    suppressContentEditableWarning={true}
+                    className="note-title">{note.info.title}
+                </h1>}
+            {!note.info.title && <span title="Add title" onClick={() => { addField('title') }}
+                className={`material-icons-outlined clickable ${(getShowActions) ? 'show' : 'hide'}`}>
+                add_circle
+            </span>}
             <ul>
                 {note.info.todos.map((todo, idx) => {
                     return (
-                        <label key={`${note.key}${idx}`} htmlFor={idx}>
-                            <li suppressContentEditableWarning={true} contentEditable={true}>{todo.txt}<input onClick={(ev) => { ev.stopPropagation() }} type="checkbox" style={{ display: 'none' }} id={idx}></input></li>
-                        </label>
+                        <li className="todo-container flex justify-between" key={`${note.key}${idx}`} >
+                            <p className={`${(todo.isDone) ? 'done' : ''}`}
+                                suppressContentEditableWarning={true}
+                                onClick={setEl}
+                                onBlur={() => { updateNote('todos', idx) }}
+                                contentEditable={true}>
+                                {todo.txt}
+                            </p>
+                            <div className="actions">
+                                <span onClick={() => { onToggleDoneTask(idx) }} className="material-icons-outlined clickable">
+                                    rule
+                                </span>
+                                <span onClick={() => { onRemoveTask(idx) }} className="material-icons-outlined clickable">
+                                    remove_circle
+                                </span>
+                            </div>
+                        </li>
                     )
                 })}
             </ul>
-            {getShowActions && <NoteAction note={note} loadNotes={loadNotes} />}
-            {!getShowActions && <div className="note-action-placeholder"></div>}
+            {<NoteAction note={note} loadNotes={loadNotes} getShowActions={getShowActions} />}
         </li>
     )
 }

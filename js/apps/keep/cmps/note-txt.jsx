@@ -18,7 +18,7 @@ export function NoteTxt({ params }) {
     return (
         <li
             style={{ backgroundColor: (note.style) ? note.style.backgroundColor : 'white' }}
-            className="note-txt note clickable"
+            className="note-txt note remove-txt-marker"
             onMouseEnter={onMouseEnter}
             onMouseLeave={onMouseLeave} >
             {note.info.title &&
@@ -26,7 +26,8 @@ export function NoteTxt({ params }) {
                     onClick={setEl}
                     suppressContentEditableWarning={true}
                     contentEditable={true}>{note.info.title}</h1>}
-            {!note.info.title && getShowActions && <span title="Add title" onClick={() => { addField('title') }} className="material-icons-outlined">
+            {!note.info.title && <span title="Add title" onClick={() => { addField('title') }}
+                className={`material-icons-outlined clickable ${(getShowActions) ? 'show' : 'hide'}`}>
                 add_circle
             </span>}
             {note.info.txt &&
@@ -34,11 +35,11 @@ export function NoteTxt({ params }) {
                     onClick={setEl}
                     contentEditable={true}
                     suppressContentEditableWarning={true}>{note.info.txt}</p>}
-            {!note.info.txt && getShowActions && <span title="Add text" onClick={() => { addField('txt') }} className="material-icons-outlined">
+            {!note.info.txt && <span title="Add text" onClick={() => { addField('txt') }}
+                className={`material-icons-outlined clickable ${(getShowActions) ? 'show' : 'hide'}`}>
                 add_circle
             </span>}
-            {getShowActions && <NoteAction note={note} loadNotes={loadNotes} />}
-            {!getShowActions && <div className="note-action-placeholder"></div>}
+            {<NoteAction note={note} loadNotes={loadNotes} getShowActions={getShowActions} />}
         </li >
     )
 }

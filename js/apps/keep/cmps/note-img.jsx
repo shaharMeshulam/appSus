@@ -2,11 +2,14 @@ import { NoteAction } from "./note-action.jsx";
 
 export function NoteImg({ params }) {
 
-    const { note,
+    const {
+        note,
         loadNotes,
         getShowActions,
         onMouseEnter,
-        onMouseLeave } = params
+        onMouseLeave,
+        setTarget,
+        updateNote } = params
 
     const setEl = ({ target }) => {
         setTarget(target)
@@ -15,7 +18,7 @@ export function NoteImg({ params }) {
     return (
         <li
             style={{ backgroundColor: (note.style) ? note.style.backgroundColor : 'white' }}
-            className="note-img note clickable"
+            className="note-img note remove-txt-marker"
             onMouseEnter={onMouseEnter}
             onMouseLeave={onMouseLeave}>
             {note.info.url && <img src={note.info.url} />}
@@ -25,7 +28,9 @@ export function NoteImg({ params }) {
                 contentEditable={true}
                 suppressContentEditableWarning={true}>
                 {note.info.title}</h1>}
-            {!note.info.title && getShowActions && <span title="Add title" onClick={() => { addField('title') }} className="material-icons-outlined">
+            {!note.info.title && <span title="Add title"
+                onClick={() => { addField('title') }}
+                className={`material-icons-outlined ${(getShowActions) ? 'show' : 'hidden'}`}>
                 add_circle
             </span>}
             {note.info.txt && <p
@@ -34,11 +39,12 @@ export function NoteImg({ params }) {
                 contentEditable={true}
                 suppressContentEditableWarning={true}>
                 {note.info.txt}</p>}
-            {!note.info.txt && getShowActions && <span title="Add text" onClick={() => { addField('txt') }} className="material-icons-outlined">
+            {!note.info.txt && <span title="Add text"
+                onClick={() => { addField('txt') }}
+                className={`material-icons-outlined clickable ${(getShowActions) ? 'show' : 'hide'}`}>
                 add_circle
             </span>}
-            {getShowActions && <NoteAction note={note} loadNotes={loadNotes} />}
-            {!getShowActions && <div className="note-action-placeholder"></div>}
+            {<NoteAction note={note} loadNotes={loadNotes} getShowActions={getShowActions} />}
         </li >
     )
 }
