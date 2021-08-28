@@ -110,6 +110,7 @@ function getMailById(id) {
 function remove(mailId) {
     return getMailById(mailId)
         .then(mail => {
+            if(!mail) return;
             if (mail.status === 'trash') gMails.splice(gMails.findIndex(m => m.id === mailId), 1);
             else mail.status = 'trash';
             storageService.saveToStorage(DB_KEY, gMails);
